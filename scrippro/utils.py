@@ -90,38 +90,6 @@ def cal_tf(input_mat,species1, assays1):
 def process_group(group,adata,log,pval):
     return group, list(sc.get.rank_genes_groups_df(adata, group=group, log2fc_min=log, pval_cutoff=pval).sort_values(by='logfoldchanges', ascending=False)[0:500].names)
 
-def sort_tsv(working_directory):
-    command = 'ls ./*.tsv | xargs -I {} sh -c \'bedtools sort -i "$1" > ./sort_tsv/"$(basename -- "$1")"\' -- {}'
-    folder_name = os.path.join(working_directory, "sort_tsv")
-    if not os.path.exists(folder_name):
-        os.mkdir(folder_name)
-    else:
-        print("文件夹已经存在：", folder_name)
-    print(folder_name)
-    p = subprocess.Popen(command, cwd=working_directory, shell=True)
-    p.wait()
-    
-def merge_tsv(working_directory):
-    command = 'ls *.tsv | xargs -P 4 -n 1 -I {} sh -c \'bedtools merge -d 1000 -c 4 -o sum -i "{}" > "./merge_tsv/{}"\''
-    folder_name = os.path.join(working_directory, "merge_tsv")
-    if not os.path.exists(folder_name):
-        os.mkdir(folder_name)
-    else:
-        print("文件夹已经存在：", folder_name)
-    print(folder_name)
-    p = subprocess.Popen(command, cwd=working_directory, shell=True)
-    p.wait()
-    
-def get_bigwig(working_directory):
-    command = 'find . -name \'*.tsv\' -type f -print0 | xargs -0 -P 4 -n 1 sh -c \'file=\"$1\"; ~/data/bedGraphToBigWig \"$file\" ~/data/hg38.genome \"./bigwig/${file%.*}.bw\"\' sh'
-    folder_name = os.path.join(working_directory, "bigwig")
-    if not os.path.exists(folder_name):
-        os.mkdir(folder_name)
-    else:
-        print("文件夹已经存在：", folder_name)
-    p = subprocess.Popen(command, cwd=working_directory, shell=True)
-    p.wait()
-
 def get_supercell_fragment(leiden_clusters,base_dir,fragment_file,chunksize = 10000000):
     folder_name = base_dir+"/supercell_fragment"
     if not os.path.exists(folder_name):
@@ -138,7 +106,7 @@ def get_supercell_fragment(leiden_clusters,base_dir,fragment_file,chunksize = 10
         print(f"Processed chunk {i+1}")
     print('final')
 
-def process_tsv(working_directory, species):
+def process_tsv(working_directory, bedGraph,species):
     # sort operation
     sort_command = 'ls ./*.tsv | xargs -I {} sh -c \'bedtools sort -i "$1" > ./sort_tsv/"$(basename -- "$1")"\' -- {}'
     sort_folder = os.path.join(working_directory, "sort_tsv")
@@ -156,7 +124,7 @@ def process_tsv(working_directory, species):
     p.wait()
 
     # bigwig operation
-    bigwig_command = 'find . -name \'*.tsv\' -type f -print0 | xargs -0 -P 4 -n 1 sh -c \'file=\"$1\"; ~/data/bedGraphToBigWig \"$file\" ~/data/{0}.genome \"./bigwig/${{file%.*}}.bw\"\' sh'.format(species)
+    bigwig_command = 'find . -name \'*.tsv\' -type f -print0 | xargs -0 -P 4 -n 1 sh -c \'file=\"$1\"; {0} \"$file\" {1} \"./bigwig/${{file%.*}}.bw\"\' sh'.format(bedGraph,species)
     bigwig_folder = os.path.join(merge_folder, "bigwig")
     if not os.path.exists(bigwig_folder):
         os.mkdir(bigwig_folder)
