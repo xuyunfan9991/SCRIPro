@@ -22,7 +22,7 @@ We recommend to create an independent conda environment for SCRIPro. If users do
    bash Miniconda3-latest-Linux-x86_64.sh
 
 
-Install MultiSpace using conda(stable version)
+Install SCRIPro using conda(stable version)
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 Step 1 Prepare conda environment for SCRIPro.
