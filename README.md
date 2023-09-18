@@ -8,8 +8,12 @@ The increasing availability of single-cell genomics data allows characterizing g
 ![avatar](docs/_static/img/workflow_new.png)
 
 
-PyPI
+It is recommended to install scripro to a conda virtual environment:
 ~~~~
 conda create -n scripro python=3.8
 ~~~~~
 
+Install scripro to this virtual env using this command:
+~~~~
+pip install scripro
+~~~~~
