@@ -10,20 +10,6 @@ The increasing availability of single-cell genomics data allows characterizing g
 
 PyPI
 ~~~~
-
-It is recommended to install lisa to a virtual environment:
-
-.. code-block:: bash
-
-  $ python3 -m venv .venvs/lisa_env
-  $ source .venvs/lisa_env/bin/activate
-  
-Install LISA to this virtual env using this command:
-
-.. code-block:: bash
-
-  (lisa_env) $ pip install lisa2
-
-Conda
+conda create -n scripro python=3.8
 ~~~~~
 
