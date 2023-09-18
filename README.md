@@ -8,11 +8,21 @@ The increasing availability of single-cell genomics data allows characterizing g
 ![avatar](docs/_static/img/workflow_new.png)
 
 
-Install SCRIPRO to this virtual env using this command:
+PyPI
+~~~~
+
+It is recommended to install lisa to a virtual environment:
 
 .. code-block:: bash
 
-  (lisa_env) $ pip install scripro
+  $ python3 -m venv .venvs/lisa_env
+  $ source .venvs/lisa_env/bin/activate
+  
+Install LISA to this virtual env using this command:
+
+.. code-block:: bash
+
+  (lisa_env) $ pip install lisa2
 
 Conda
 ~~~~~
