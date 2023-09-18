@@ -7,4 +7,9 @@ The increasing availability of single-cell genomics data allows characterizing g
 
 ![avatar](docs/_static/img/workflow_new.png)
 
+'''
+conda create -n scripro python=3.8
+pip install scripro
+'''
+
 
