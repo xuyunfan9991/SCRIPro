@@ -13,10 +13,28 @@ It is recommended to install scripro to a conda virtual environment:
 conda create -n scripro python=3.8
 ~~~~~
 
-Install scripro to this virtual env using this command:
+
+## Installation
+### Use the following commands to install Minicoda3：
+``` bash
+$ wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh
+$ bash Miniconda3-latest-Linux-x86_64.sh
+```
+It is recommended to install scripro to a conda virtual environment:
+~~~~
+conda create -n scripro python=3.8
+~~~~~
+
+### Install SCRIPro from Github (developing version)
+```bash
+git clone git@github.com:xuyunfan9991/SCRIPro.git
+cd SCRIPro
+python setup.py install
+```
+
+### Install SCRIPro from Pypi
 ~~~~
 pip install scripro
 ~~~~~
-
 
 
