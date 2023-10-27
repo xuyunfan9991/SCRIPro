@@ -32,17 +32,17 @@ class Ori_Data():
         sc.tl.rank_genes_groups(self.adata,'new_leiden', method='t-test')
         self.cellgroup = pd.DataFrame(self.adata.obs.iloc[:,-1])
 
-    def _spatialcluster(self,Target_sum=1e4,N_top_genes=3000,Rad_cutoff=50,Resolution=0.8):
+    def _spatialcluster(self,Target_sum=1e4,N_top_genes=3000,Rad_cutoff=50,Resolution=0.8,Expression_alpha=0.5):
         sc.pp.normalize_total(self.adata, target_sum=Target_sum)
         sc.pp.log1p(self.adata)
         sc.pp.highly_variable_genes(self.adata,n_top_genes=N_top_genes)
         STAGATE.Cal_Spatial_Net(self.adata, rad_cutoff=Rad_cutoff)
-        # STAGATE.Stats_Spatial_Net(adata)
-        self.adata = STAGATE.train_STAGATE(self.adata, alpha=0.5)
-        sc.pp.neighbors(self.adata, use_rep='STAGATE')
+        STAGATE.Stats_Spatial_Net(adata)
+        self.adata = STAGATE.train_STAGATE(self.adata, alpha=Expression_alpha)
+        sc.pp.neighbors(self.adata, use_rep='SCRIPro')
         sc.tl.umap(self.adata)
         sc.tl.leiden(self.adata, resolution=Resolution)
-        sc.pl.embedding(self.adata, basis="spatial", color=['leiden'],s=6, show=False, title='STAGATE',save="Spatial_cluster.pdf")
+        sc.pl.embedding(self.adata, basis="spatial", color=['leiden'],s=6, show=False, title='SCRIPro',save="Spatial_cluster.pdf")
         sc.pl.umap(self.adata, color=['leiden'],show=False,save="Spatial_umap_leiden.pdf")
     
     def _fliter(self,Target_sum=1e4,N_top_genes=3000,Max_value=10,N_neighbors=10,N_pcs=40,Resolution=0.6):
