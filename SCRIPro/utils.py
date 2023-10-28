@@ -23,6 +23,7 @@ from functools import partial
 from scipy import stats, sparse
 from scipy.stats import kendalltau, pearsonr, spearmanr
 
+
 def write_dataframe_to_tsv(df_subset, filename):
     series = df_subset.stack().reset_index()
     series = series[series.iloc[:, 2] != 0]
@@ -44,27 +45,24 @@ def get_marker_for_group(adata, i, log2fc, pval, gene_list_len):
     else:
         return i, tem_gene
 
+
 def process_and_merge(df, folder_path, n_num=20):
     num_partitions = min(n_num, len(df))
     dfs = np.array_split(df, num_partitions)
     pool = multiprocessing.Pool(processes=num_partitions)
 
-    
     for i, df_subset in enumerate(dfs):
         filename = f"{folder_path}/output_{i}.tsv"
         pool.apply_async(write_dataframe_to_tsv, args=(df_subset, filename))
 
-    
     pool.close()
     pool.join()
 
-    
     merge_and_delete_tsv(folder_path)
 
+
 def merge_and_delete_tsv(folder_path):
-    
     subprocess.run(f'cat {folder_path}/*.tsv > {folder_path}/merge.tsv', shell=True)
-    
     subprocess.run(f'rm {folder_path}/output*.tsv', shell=True)
 
 
@@ -81,12 +79,13 @@ def cal_tf(input_mat,species1, assays1):
 def process_group(group,adata,log,pval):
     return group, list(sc.get.rank_genes_groups_df(adata, group=group, log2fc_min=log, pval_cutoff=pval).sort_values(by='logfoldchanges', ascending=False)[0:500].names)
 
+
 def get_supercell_fragment(leiden_clusters,base_dir,fragment_file,chunksize = 10000000):
     folder_name = base_dir+"/supercell_fragment"
     if not os.path.exists(folder_name):
         os.mkdir(folder_name)
     else:
-        print("文件夹已经存在：", folder_name)
+        print("The folder already exists：", folder_name)
     for i,chunk in enumerate(pd.read_csv(fragment_file, delimiter='\t',comment='#', chunksize=chunksize,header=None, names=['chrom', 'start', 'end', 'cell', 'fragment'])):
         chunk.set_index('cell', inplace=True)
         groups = chunk.groupby(leiden_clusters['new_leiden'])
@@ -97,8 +96,8 @@ def get_supercell_fragment(leiden_clusters,base_dir,fragment_file,chunksize = 10
         print(f"Processed chunk {i+1}")
     print('final')
 
+
 def process_tsv(working_directory, bedGraph,species):
-    
     sort_command = 'ls ./*.tsv | xargs -I {} sh -c \'bedtools sort -i "$1" > ./sort_tsv/"$(basename -- "$1")"\' -- {}'
     sort_folder = os.path.join(working_directory, "sort_tsv")
     if not os.path.exists(sort_folder):
@@ -106,7 +105,6 @@ def process_tsv(working_directory, bedGraph,species):
     p = subprocess.Popen(sort_command, cwd=working_directory, shell=True)
     p.wait()
 
-    
     merge_command = 'ls *.tsv | xargs -P 4 -n 1 -I {} sh -c \'bedtools merge -d 1000 -c 4 -o sum -i "{}" > "./merge_tsv/{}"\''
     merge_folder = os.path.join(sort_folder, "merge_tsv")
     if not os.path.exists(merge_folder):
@@ -114,7 +112,6 @@ def process_tsv(working_directory, bedGraph,species):
     p = subprocess.Popen(merge_command, cwd=sort_folder, shell=True)
     p.wait()
 
-    
     bigwig_command = 'find . -name \'*.tsv\' -type f -print0 | xargs -0 -P 4 -n 1 sh -c \'file=\"$1\"; {0} \"$file\" {1} \"./bigwig/${{file%.*}}.bw\"\' sh'.format(bedGraph,species)
     bigwig_folder = os.path.join(merge_folder, "bigwig")
     if not os.path.exists(bigwig_folder):
@@ -122,10 +119,10 @@ def process_tsv(working_directory, bedGraph,species):
     p = subprocess.Popen(bigwig_command, cwd=merge_folder, shell=True)
     p.wait()
 
-    
     shutil.move(bigwig_folder, os.path.join(os.getcwd(), "bigwig"))
     shutil.rmtree(working_directory)
-    
+
+
 def process_marker(i,lisa_info,bw_path,rpmap_enhanced,factor_binging,factor_metadata,species):
     cell_info = lisa_info[i]
     gene_mask = cell_info[0]
@@ -173,25 +170,23 @@ def glue_supercell(combined):
         else:
             sub_test.obs['leiden'] = i + "_0"
         combined.obs.loc[leiden_index,'new_leiden'] = sub_test.obs['leiden']
+
+
 def get_delta_RP_p_value(gene_TF_scores, label_vector):
         '''
         gene_TF_scores: gene x TF, model output of delta-RP matrix. more purturbation of genes of interest correspond with higher delta regulation score
         '''
-        
         query_delta = gene_TF_scores[label_vector.astype(bool)]
         background_delta = gene_TF_scores[~label_vector.astype(bool)]
 
-        
         test_parameters = list(zip(query_delta.T, background_delta.T))
 
-        p_vals = [
-            mannu_test_function((q,b)) for q,b in test_parameters
-        ]
-
+        p_vals = [mannu_test_function((q,b)) for q,b in test_parameters]
         _, p_values = list(zip(*p_vals))
 
         return p_values
-    
+
+
 def mannu_test_function(x):
     query, background = x
     try:
@@ -207,8 +202,10 @@ def get_quert_gene(chip_matrix,target_h5,gene_name):
         tem[i]=list(set(target_h5[i][target_h5[i]>2].index).intersection(set(gene_name)))
     return tem
 
+
 def maxmin(dataframe):
     return (dataframe - dataframe.min())/(dataframe.max() - dataframe.min())
+
 
 def get_cell_barcode_score(super_leiden,super_leiden_value,adList_obs):
     s = []
@@ -217,6 +214,7 @@ def get_cell_barcode_score(super_leiden,super_leiden_value,adList_obs):
         num = len(origin_leiden.loc[origin_leiden.leiden ==i.split(sep = '_')[1]].index)
         s.extend(list(zip([pd.DataFrame(super_leiden_value).loc[i,:]]*num,origin_leiden.loc[origin_leiden.leiden ==i.split(sep = '_')[1]].index)))
     return s
+
 
 def plot_spatial(TF, TF_matrix, adList_obs, adata, spot_size, fig_path):
     plot_basis='spatial'
