@@ -2,29 +2,39 @@ import setuptools
 import glob
 import os
 
+
 with open("requirements.txt", "r") as f:
     requirements = f.read().splitlines()
 
+
 setuptools.setup(
-    name="scripro",
-    version="0.0.5",
-    python_requires=">=3.8",
-    keywords="Single-Cell Gene Regulatory Network Inference using ChIP-seq for Multi-omics",
-    url="https://github.com/xuyunfan9991/SCRIPro",
+    name="scripro",  
+    version="0.0.6",  
+    author="Xu Yunfan",  
+    author_email="xuyunfan9991@gmail.com",
+    description="Single-cell gene regulation network inference by large-scale data integration Pro",
+    long_description=open('README.md').read(),
+    long_description_content_type="text/markdown", 
+    python_requires=">=3.8", 
+    keywords="Single-Cell Gene Regulatory Network Inference using ChIP-seq for Multi-omics", 
+    url="https://github.com/xuyunfan9991/SCRIPro", 
     license="GPL-3.0+",
-    packages=['scripro'],
+    packages=setuptools.find_packages(),
     install_requires=requirements,
     entry_points={
-            'console_scripts': [
-            'SCIPRO=scripro.start:main'
-            ]
-        },
+        'console_scripts': [
+            'SCIPRO=scripro.start:main' 
+        ]
+    },
     include_package_data=True,
-    data_files=[("", ["requirements.txt", "hg38.genome", "mm10.genome"])],
     classifiers=[
         "Programming Language :: Python :: 3",
-        "License :: OSI Approved :: MIT License",
+        "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
         "Operating System :: OS Independent",
-    ]
-    
+    ],
+ 
+    package_data={
+        'SCRIPro': ['*.genome'], 
+    },
 )
+

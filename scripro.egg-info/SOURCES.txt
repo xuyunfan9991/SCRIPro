@@ -1,0 +1,12 @@
+README.md
+setup.py
+SCRIPro/Ori_data.py
+SCRIPro/__init__.py
+SCRIPro/supercell.py
+SCRIPro/utils.py
+scripro.egg-info/PKG-INFO
+scripro.egg-info/SOURCES.txt
+scripro.egg-info/dependency_links.txt
+scripro.egg-info/entry_points.txt
+scripro.egg-info/requires.txt
+scripro.egg-info/top_level.txt
