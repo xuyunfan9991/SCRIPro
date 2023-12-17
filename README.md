@@ -7,6 +7,11 @@ The increasing availability of single-cell genomics data allows characterizing g
 
 ![avatar](docs/_static/img/workflow_new.png)
 
+## Documentation
+
+For the detailed usage and examples of SCRIP, please refer to the [documentation](https://scripro.readthedocs.io/en/latest).  
+For any problems encountered in using, feel free to open an [issue](https://github.com/xuyunfan9991/SCRIPro/issues).  
+
 
 ## Installation
 ### Use the following commands to install Minicoda3：
