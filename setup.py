@@ -9,7 +9,7 @@ with open("requirements.txt", "r") as f:
 
 setuptools.setup(
     name="scripro",  
-    version="0.0.6",  
+    version="0.1.10",  
     author="Xu Yunfan",  
     author_email="xuyunfan9991@gmail.com",
     description="Single-cell gene regulation network inference by large-scale data integration Pro",
@@ -34,7 +34,9 @@ setuptools.setup(
     ],
  
     package_data={
-        'SCRIPro': ['*.genome'], 
+        'scripro': ['data/*'],
     },
 )
 
+
+# setup.py

@@ -9,3 +9,5 @@ seaborn==0.12.2
 scglue==0.3.2
 lisa2[coverage]
 tables
+tqdm
+ipywidgets
