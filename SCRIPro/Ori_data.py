@@ -1,5 +1,4 @@
 import math
-import multiprocessing
 import random
 import warnings
 from collections import Counter
@@ -22,19 +21,18 @@ from .utils import *
 from concurrent.futures import ProcessPoolExecutor, as_completed
 from functools import partial
 from tqdm import tqdm
-from functools import partial
 from tqdm.contrib.concurrent import process_map
 from concurrent.futures import ProcessPoolExecutor, as_completed
 from tqdm import tqdm
 from scipy.stats import kendalltau, pearsonr, spearmanr
 class Ori_Data():
-    def __init__(self,adata,Cell_num,use_glue = False):
+    def __init__(self,adata,Cell_num,use_glue = False,cluster_method='leiden'):
         self.adata = adata[:, ~adata.var_names.str.contains('\.|\-')]
-        self.adata_super = self.adata.copy()
         self.Cell_num = Cell_num
+        self.cluster_method = cluster_method
         if use_glue == False:
-            self._fliter()
-            self._supercell()
+            #self._fliter()
+            self._supercell(cluster_method=self.cluster_method)
             self.super_gene_exp = self.ad_all.copy()
             self.super_gene_mean = self.super_gene_exp.mean()
             self.super_gene_std = self.super_gene_exp.std()
@@ -84,9 +82,9 @@ class Ori_Data():
         self.marker_list = {i: tem_gene for i, tem_gene in results if tem_gene is not None}
         
     def get_largedata_markergene(self,topgene=1500,quantile=0.6):
-        sc.tl.rank_genes_groups(self.adata,'leiden', method='t-test')
+        sc.tl.rank_genes_groups(self.adata,self.cluster_method, method='t-test')
         all_marker_gene_list = {}
-        for i in set(self.adata.obs['leiden']):
+        for i in set(self.adata.obs[self.cluster_method]):
             all_marker_gene_list[i] = set(self.adata.uns['rank_genes_groups']['names'][i][0:topgene])
         marker_gene_list = {}
         candidate_gene = self.ad_all[self.ad_all.apply(lambda x: x > x.quantile(0.6),axis=0)]
@@ -100,15 +98,13 @@ class Ori_Data():
             else:
                 marker_gene_list[j] = meta_marker
         self.marker_list = marker_gene_list
-
-
         
-    def _supercell(self):
+    def _supercell(self,cluster_method='leiden'):
         adList = []
         adList_obs = {}
-        for i in set(self.adata.obs.leiden):
-            leiden_index = self.adata.obs.loc[self.adata.obs.leiden == i].index
-            sub_cluster = self.adata_super[leiden_index]
+        for i in set(self.adata.obs[cluster_method]):
+            leiden_index = self.adata.obs.loc[self.adata.obs[cluster_method] == i].index
+            sub_cluster = self.adata.raw.to_adata()[leiden_index]
             merged_data,obs = supercell_pipeline(sub_cluster,cell_num=self.Cell_num,verbose=False)
             merged_data_index = [i + "_" + str(j) for j in range(0,merged_data.shape[0])]
             merged_data.obs = pd.DataFrame(index = merged_data_index)
@@ -289,8 +285,10 @@ class SCRIPro_Multiome():
         
         self.P_value_matrix = self.P_value_matrix.loc[chip_matrix2_new.index,chip_matrix2_new.columns]
         test_mat = chip_matrix2_new.mul(self.P_value_matrix)
+        
+        
         self.tf_score = test_mat
-        target_h5.close()
+    
     def get_tf_only_target(self):
         target_h5=pkg_resources.resource_filename('scripro', 'data/TF_target_RP.h5')
         super_gene_exp = self.Ori_Data.super_gene_exp
