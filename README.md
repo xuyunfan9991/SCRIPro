@@ -23,8 +23,8 @@ It is recommended to install scripro to a conda virtual environment:
 ~~~~
 conda create -n scripro python=3.8
 conda install -c liulab-dfci lisa2
-lisa intall hg38 oneshot ./hg38_scripro.h5 --force
-lisa intall mm10 oneshot ./mm10_scripro.h5 --force
+lisa install hg38 oneshot ./hg38_scripro.h5 --force
+lisa install mm10 oneshot ./mm10_scripro.h5 --force
 ~~~~~
 
 ### Install SCRIPro from Github (developing version)
