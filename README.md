@@ -19,15 +19,14 @@ For any problems encountered in using, feel free to open an [issue](https://gith
 wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh
 bash Miniconda3-latest-Linux-x86_64.sh
 ```
-It is recommended to install scripro to a conda virtual environment.
-hg38_scripro.h5 and mm10_scripro.h5 can be downloaded from https://zenodo.org/records/10554173.:
+It is recommended to install scripro to a conda virtual environment.:
 ~~~~
 conda create -n scripro python=3.8
 conda install -c liulab-dfci lisa2
 lisa install hg38 oneshot ./hg38_scripro.h5 --force
 lisa install mm10 oneshot ./mm10_scripro.h5 --force
 ~~~~~
-
+hg38_scripro.h5 and mm10_scripro.h5 can be downloaded from https://zenodo.org/records/10554173.
 ### Install SCRIPro from Github (developing version)
 ```bash
 git clone git@github.com:xuyunfan9991/SCRIPro.git
