@@ -84,7 +84,7 @@ Input files arguments:
   -f ATAC_PATH, --atac_file ATAC_PATH
                         ATAC file path.REQUIRED.
   -g GLUE_ANNOTATION, --glue_annotation GLUE_ANNOTATION
-                        If the scRNA-seq barcodes do not match the scATAC-seq barcodes, the glue_annotation file that will be used.,like
+                        If the scRNA-seq barcodes \do not match the scATAC-seq barcodes, the glue_annotation file that will be used.,like
                         'gencode.v43.chr_patch_hapl_scaff.annotation.gtf.gz'
 
 Output arguments:
