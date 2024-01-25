@@ -1,7 +1,5 @@
 import argparse
 import pickle
-from .supercell import *
-from .utils import *
 from .Ori_data import *
 import sys
 from numpy import require
@@ -246,7 +244,7 @@ def add_enrich_parser( subparsers ):
     group_preprocessing = argparser_enrich_rna.add_argument_group( "Preprocessing paramater arguments" )
     group_other = argparser_enrich_rna.add_argument_group( "Other options" )
     group_other.add_argument( "-t", '--thread', dest='n_cores', type = int, default = 8,
-                              help="Number of cores use to run SCRIP. DEFAULT: 8.")
+                              help="Number of cores use to run SCRIPro. DEFAULT: 8.")
 
     
 def add_enrich_parser_multiome( subparsers ):
@@ -265,15 +263,15 @@ def add_enrich_parser_multiome( subparsers ):
     group_input.add_argument( "-a", "--atac_file_type", dest = "atac_file_type", choices= ['fragment', 'matrix'], required = True,
                               help = 'atac_file_type,"fragment" or "matrix(h5,h5ad,mtx)"' )
     group_input.add_argument( "-b", "--barcode_corresponds", dest = "barcodes", choices= ['0', '1'], required = True,
-                              help = 'Whether the rna barcode and atac barcode correspond to each other. "0"(Corresponding) or "1"(Not corresponding). REQUIRED.' )
+                              help = 'Whether the scRNA-seq barcode matches the scATAC-seq barcode. "0"(Match) or "1"(Not match). REQUIRED.' )
     group_input.add_argument( "-f", "--atac_file", dest = "atac_path", type = str, required = True,
-                              help = 'ATAC file,"fragment" or "matrix(h5,h5ad,mtx)". REQUIRED.' )
+                              help = 'ATAC file path.REQUIRED.' )
     group_input.add_argument( "-g", "--glue_annotation", dest = "glue_annotation", type = str,
-                              help = 'glue_annotation,like \'gencode.v43.chr_patch_hapl_scaff.annotation.gtf.gz\'' )
+                              help = 'If the scRNA-seq barcodes do not match the scATAC-seq barcodes, the glue_annotation file that will be used.,like \'gencode.v43.chr_patch_hapl_scaff.annotation.gtf.gz\'' )
     # group for output files
     group_output = argparser_enrich_multiome.add_argument_group( "Output arguments" )
     group_output.add_argument( "-p", "--project", dest = "project", type = str, default = "" ,required = True,
-                               help = 'Project name, which will be used to generate output files. DEFAULT: Random generate.')
+                               help = 'Project name, which will be used to generate output files.')
     # group for preprocessing
     group_preprocessing = argparser_enrich_multiome.add_argument_group( "Preprocessing paramater arguments" )
     group_other = argparser_enrich_multiome.add_argument_group( "Other options" )

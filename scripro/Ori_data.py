@@ -1,5 +1,6 @@
 import math
 import random
+import gc
 import warnings
 from collections import Counter
 from multiprocessing import Pool
@@ -16,7 +17,6 @@ import scanpy as sc
 import seaborn as sns
 from lisa import FromGenes
 from tqdm.contrib.concurrent import process_map
-from .supercell import *
 from .utils import *
 from concurrent.futures import ProcessPoolExecutor, as_completed
 from functools import partial
@@ -26,17 +26,17 @@ from concurrent.futures import ProcessPoolExecutor, as_completed
 from tqdm import tqdm
 from scipy.stats import kendalltau, pearsonr, spearmanr
 class Ori_Data():
-    def __init__(self,adata,Cell_num,use_glue = False,cluster_method='leiden'):
+    def __init__(self,adata,Cell_num,use_glue = False,cluster_method='leiden',cores = 1):
         self.adata = adata[:, ~adata.var_names.str.contains('\.|\-')]
         self.Cell_num = Cell_num
         self.cluster_method = cluster_method
+        self.core = cores
         if use_glue == False:
             #self._fliter()
             self._supercell(cluster_method=self.cluster_method)
             self.super_gene_exp = self.ad_all.copy()
             self.super_gene_mean = self.super_gene_exp.mean()
             self.super_gene_std = self.super_gene_exp.std()
-            sc.tl.rank_genes_groups(self.adata,'new_leiden', method='t-test')
             self.cellgroup = pd.DataFrame(self.adata.obs.iloc[:,-1]) 
     def get_glue_cluster(self,rna_leiden_clusters):
         self.adata.obs['new_leiden'] = rna_leiden_clusters[self.adata.obs.index]
@@ -73,7 +73,9 @@ class Ori_Data():
         sc.tl.umap(self.adata)
         sc.tl.leiden(self.adata,resolution=Resolution)
  
-    def get_positive_marker_gene_parallel(self, gene_list_len=30,cores=2):
+    def get_positive_marker_gene_parallel(self, gene_list_len=30):
+        print("Compute marker gene")
+        sc.tl.rank_genes_groups(self.adata,'new_leiden', method='t-test',n_jobs=self.core)
         pool = mp.Pool(cores)
         groups = set(self.adata.obs['new_leiden'])
         func = partial(get_marker_for_group, self.adata, gene_list_len=gene_list_len)
@@ -102,23 +104,30 @@ class Ori_Data():
     def _supercell(self,cluster_method='leiden'):
         adList = []
         adList_obs = {}
+        subcluster_adata = {}
+        adata_raw = self.adata.raw.to_adata()
         for i in set(self.adata.obs[cluster_method]):
             leiden_index = self.adata.obs.loc[self.adata.obs[cluster_method] == i].index
-            sub_cluster = self.adata.raw.to_adata()[leiden_index]
-            merged_data,obs = supercell_pipeline(sub_cluster,cell_num=self.Cell_num,verbose=False)
-            merged_data_index = [i + "_" + str(j) for j in range(0,merged_data.shape[0])]
-            merged_data.obs = pd.DataFrame(index = merged_data_index)
-            adList.append(merged_data)
-            adList_obs[i] = obs
-        ad_all = ad.concat(adList,join='outer')
+            sub_cluster = adata_raw[leiden_index]
+            subcluster_adata[i] = sub_cluster
+        del adata_raw
+        gc.collect()
+        with ProcessPoolExecutor(max_workers=self.core) as executor:
+            futures = [executor.submit(process_sub_cluster,i,50) for i in subcluster_adata.items()]
+            for future in tqdm(as_completed(futures),total=len(futures),desc="Compute supercell"):
+                merged_data, i, obs = future.result()
+                adList.append(merged_data)
+                adList_obs[i] = obs
+        ad_all = ad.concat(adList, join='outer')
         sc.pp.normalize_total(ad_all, target_sum=1e4)
         sc.pp.log1p(ad_all)
         ad_all = ad_all.to_df()
+        self.ad_all = ad_all
         self.adata.obs['new_leiden'] = np.zeros(len(self.adata.obs))
         for i in adList_obs.keys():
             for k in adList_obs[i].index:
                 self.adata.obs.loc[k,'new_leiden'] = i+"_"+adList_obs[i].loc[k,'leiden']  
-        self.ad_all = ad_all
+        
         
     def get_supercell_exp(self,pvalue_matrix):
         super_exp_tra = self.ad_all.loc[pvalue_matrix.index,pvalue_matrix.columns]
