@@ -35,7 +35,7 @@ For enrichment of TF activity for single-cell or spatial RNA-seq data, you can u
 enrich_multiome
 ~~~~~~~~~~~~~~~~~~
 
- For enrichment of TF activity for both RNA-seq and ATAC-seq for single-cell or spatial data, you can use:
+For enrichment of TF activity for both RNA-seq and ATAC-seq for single-cell or spatial data, you can use:
 
 .. code:: 
 
