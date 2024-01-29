@@ -3,6 +3,9 @@ Usage
 
 SCRIPro includes three main functions.  
 
+enrich_rna
+~~~~~~~~~~~~~~~~~~
+
 For enrichment of TF activity for single-cell or spatial RNA-seq data, you can use:
 
 .. code:: 
@@ -27,6 +30,10 @@ For enrichment of TF activity for single-cell or spatial RNA-seq data, you can u
     Other options:
     -t N_CORES, --thread N_CORES
                             Number of cores use to run SCRIPro. DEFAULT: 8.
+
+
+enrich_multiome
+~~~~~~~~~~~~~~~~~~
 
  For enrichment of TF activity for both RNA-seq and ATAC-seq for single-cell or spatial data, you can use:
 
@@ -62,6 +69,10 @@ For enrichment of TF activity for single-cell or spatial RNA-seq data, you can u
     Other options:
     -t N_CORES, --thread N_CORES
                             Number of cores use to run SCRIPros. DEFAULT: 8.
+
+
+get_tf_target
+~~~~~~~~~~~~~~~~~~
 
 For getting the target of specific TR, you can use:
 
