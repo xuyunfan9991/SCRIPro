@@ -16,12 +16,11 @@ import seaborn as sns
 from lisa import FromGenes
 
 def preprocess_data(sub_adata, n_genes=3000, npcs=40, percent_cells=0.7):
-    sc.pp.normalize_total(sub_adata, target_sum=1e4)
-    sc.pp.log1p(sub_adata)
+    #sc.pp.normalize_total(sub_adata, target_sum=1e4)
+    #sc.pp.log1p(sub_adata)
     sc.pp.highly_variable_genes(sub_adata, min_mean=0.0125, max_mean=3, min_disp=0.5, n_top_genes=n_genes)
     sub_adata = sub_adata[:, sub_adata.var.highly_variable]
     ad_sub = sc.AnnData(sub_adata.X, obs=sub_adata.obs, var=sub_adata.var,dtype='float32')
-    
     saved_log_mat = ad_sub.X.copy()
     sc.pp.scale(ad_sub)
     sc.tl.pca(ad_sub, svd_solver='arpack', n_comps=min(npcs, sub_adata.shape[0] - 1))

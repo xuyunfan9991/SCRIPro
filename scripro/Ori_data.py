@@ -17,6 +17,7 @@ import scanpy as sc
 import seaborn as sns
 from lisa import FromGenes
 from tqdm.contrib.concurrent import process_map
+from .supercell import *
 from .utils import *
 from concurrent.futures import ProcessPoolExecutor, as_completed
 from functools import partial
@@ -76,7 +77,7 @@ class Ori_Data():
     def get_positive_marker_gene_parallel(self, gene_list_len=30):
         print("Compute marker gene")
         sc.tl.rank_genes_groups(self.adata,'new_leiden', method='t-test',n_jobs=self.core)
-        pool = mp.Pool(cores)
+        pool = mp.Pool(self.core)
         groups = set(self.adata.obs['new_leiden'])
         func = partial(get_marker_for_group, self.adata, gene_list_len=gene_list_len)
         results = pool.map(func, groups)
@@ -110,14 +111,18 @@ class Ori_Data():
             leiden_index = self.adata.obs.loc[self.adata.obs[cluster_method] == i].index
             sub_cluster = adata_raw[leiden_index]
             subcluster_adata[i] = sub_cluster
-        del adata_raw
-        gc.collect()
+            '''
         with ProcessPoolExecutor(max_workers=self.core) as executor:
             futures = [executor.submit(process_sub_cluster,i,50) for i in subcluster_adata.items()]
             for future in tqdm(as_completed(futures),total=len(futures),desc="Compute supercell"):
                 merged_data, i, obs = future.result()
                 adList.append(merged_data)
                 adList_obs[i] = obs
+                '''
+        for i in subcluster_adata.items():
+            merged_data, i1, obs = process_sub_cluster(i,50)
+            adList.append(merged_data)
+            adList_obs[i1] = obs
         ad_all = ad.concat(adList, join='outer')
         sc.pp.normalize_total(ad_all, target_sum=1e4)
         sc.pp.log1p(ad_all)

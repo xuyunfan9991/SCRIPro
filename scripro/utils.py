@@ -28,11 +28,11 @@ from scipy.stats import kendalltau, pearsonr, spearmanr
 from tqdm import tqdm
 
 
-def process_sub_cluster(i, cell_num):
+def process_sub_cluster(i,cell_num):
     merged_data, obs = supercell_pipeline(i[1], cell_num=cell_num, verbose=False)
     merged_data_index = [i[0] + "_" + str(j) for j in range(0, merged_data.shape[0])]
     merged_data.obs = pd.DataFrame(index=merged_data_index)
-    return merged_data, i[0], obs
+    return merged_data,i[0],obs
 
 def get_marker_for_group(adata, i,gene_list_len):
     tem_gene = list(sc.get.rank_genes_groups_df(adata, group=i).sort_values(by = 'scores',ascending = False)[0:500].names)
