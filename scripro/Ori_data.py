@@ -302,7 +302,7 @@ class SCRIPro_Multiome():
         
         
         self.tf_score = test_mat
-    
+        target_h5.close()
     def get_tf_only_target(self):
         target_h5=pkg_resources.resource_filename('scripro', 'data/TF_target_RP.h5')
         super_gene_exp = self.Ori_Data.super_gene_exp
@@ -340,7 +340,8 @@ class SCRIPro_Multiome():
         
         
         self.tf_score = test_mat
-    
+        target_h5.close()
+        
     def get_tf_target(self,TF):
         C =self.chip_matrix_melt[self.chip_matrix_melt.column == TF]
         
