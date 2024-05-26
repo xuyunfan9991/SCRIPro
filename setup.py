@@ -9,7 +9,7 @@ with open("requirements.txt", "r") as f:
 
 setuptools.setup(
     name="scripro",  
-    version="1.1.6",  
+    version="1.1.13",  
     author="Xu Yunfan",  
     author_email="xuyunfan9991@gmail.com",
     description="Single-cell gene regulation network inference by large-scale data integration Pro",

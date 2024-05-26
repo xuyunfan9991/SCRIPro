@@ -16,11 +16,13 @@ import seaborn as sns
 from lisa import FromGenes
 
 def preprocess_data(sub_adata, n_genes=3000, npcs=40, percent_cells=0.7):
-    #sc.pp.normalize_total(sub_adata, target_sum=1e4)
-    #sc.pp.log1p(sub_adata)
+    if 'log1p' not in sub_adata.uns.keys():
+        sc.pp.normalize_total(sub_adata, target_sum=1e4)
+        sc.pp.log1p(sub_adata)
     sc.pp.highly_variable_genes(sub_adata, min_mean=0.0125, max_mean=3, min_disp=0.5, n_top_genes=n_genes)
     sub_adata = sub_adata[:, sub_adata.var.highly_variable]
     ad_sub = sc.AnnData(sub_adata.X, obs=sub_adata.obs, var=sub_adata.var,dtype='float32')
+    
     saved_log_mat = ad_sub.X.copy()
     sc.pp.scale(ad_sub)
     sc.tl.pca(ad_sub, svd_solver='arpack', n_comps=min(npcs, sub_adata.shape[0] - 1))
@@ -127,24 +129,4 @@ def supercell_pipeline(adata, ngenes=2000, npcs=40,cell_num=50,min_cell=30,verbo
     merged_data = get_merged_dataset(adata, temp.obs)
     
     return merged_data,temp.obs
-
-def get_supercell(adata,adata_super):
-    adList = []
-    adList_obs = {}
-    for i in set(adata.obs.leiden):
-        leiden_index = adata.obs.loc[adata.obs.leiden == i].index
-        sub_cluster = adata_super[leiden_index]
-        merged_data,obs = supercell_pipeline(sub_cluster,cell_num=50,verbose=False)
-        
-        merged_data_index = [i + "_" + str(j) for j in range(0,merged_data.shape[0])]
-        merged_data.obs = pd.DataFrame(index = merged_data_index)
-        adList.append(merged_data)
-        adList_obs[i] = obs
-    ad_all = ad.concat(adList,join='outer')
-    ad_all = ad_all.to_df()
-    adata.obs.insert(loc=6, column='new_leiden', value=3)
-    for i in adList_obs.keys():
-        for k in adList_obs[i].index:
-            adata.obs.loc[k,'new_leiden'] = i+"_"+adList_obs[i].loc[k,'leiden']  
-    return ad_all
     

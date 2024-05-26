@@ -6,6 +6,7 @@ from .Ori_data import *
 import sys
 from numpy import require
 import warnings
+from shutil import copyfile
 warnings.filterwarnings("ignore")
 
 def run_enrich_only_rna(args):
@@ -185,8 +186,13 @@ def get_target_score(args):
     target = scripro_data.get_tf_target(tf)
     target.to_csv(project+'_target.csv', index=False, sep=',')
     return 
+    
 
 
+def get_reference_data(args):
+    target_h5_path=pkg_resources.resource_filename('scripro', 'data/TF_target_RP.h5')
+    copyfile(args.reference,target_h5_path)
+    return 
 
 def main():
     warnings.filterwarnings("ignore")
@@ -208,6 +214,13 @@ def main():
             get_target_score(args)
         except MemoryError:
             sys.exit( "MemoryError occurred.")
+    elif subcommand == "install_reference":
+        try:
+            get_reference_data(args)
+        except MemoryError:
+            sys.exit( "MemoryError occurred.")
+            
+            
 
     return
 
@@ -215,12 +228,13 @@ def prepare_argparser():
     description = "%(prog)s"
     epilog = "For command line options of each command, type: %(prog)s COMMAND -h"
     argparser = argparse.ArgumentParser( description = description, epilog = epilog )
-    argparser.add_argument( "--version", action="version", version="0.1.6")
+    argparser.add_argument( "--version", action="version", version="1.1.12")
     subparsers = argparser.add_subparsers( dest = 'subcommand' )
     subparsers.required = True
     add_enrich_parser(subparsers)
     add_enrich_parser_multiome(subparsers)
     add_target_parser(subparsers)
+    add_reference_parser(subparsers)
     return argparser
 
 
@@ -297,6 +311,18 @@ def add_target_parser( subparsers ):
     group_output.add_argument( "-p", "--project", dest = "project", type = str, default = "" ,required = True,
                                help = 'Project name, which will be used to generate output file.')
 
+    
+def add_reference_parser( subparsers ):
+    """Add main function 'install_reference' argument parsers.
+    """
+    argparser_target = subparsers.add_parser("install_reference", help="Install RP reference")
+
+    # group for input files
+    group_input = argparser_target.add_argument_group( "Input files arguments" )
+    group_input.add_argument( "-i", "--input_scripro_reference", dest = "reference", type = str, required = True,
+                              help = 'scripro RP reference file. REQUIRED.' )
+    
+    
 if __name__ == '__main__':
     warnings.filterwarnings("ignore")
     try:

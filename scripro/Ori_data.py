@@ -27,11 +27,12 @@ from concurrent.futures import ProcessPoolExecutor, as_completed
 from tqdm import tqdm
 from scipy.stats import kendalltau, pearsonr, spearmanr
 class Ori_Data():
-    def __init__(self,adata,Cell_num,use_glue = False,cluster_method='leiden',cores = 1):
+    def __init__(self,adata,Cell_num,use_glue = False,cluster_method='leiden',cores = 1,min_cell=30):
         self.adata = adata[:, ~adata.var_names.str.contains('\.|\-')]
         self.Cell_num = Cell_num
         self.cluster_method = cluster_method
         self.core = cores
+        self.min_cell=min_cell
         if use_glue == False:
             #self._fliter()
             self._supercell(cluster_method=self.cluster_method)
@@ -101,6 +102,7 @@ class Ori_Data():
             else:
                 marker_gene_list[j] = meta_marker
         self.marker_list = marker_gene_list
+                
         
     def _supercell(self,cluster_method='leiden'):
         adList = []
@@ -111,16 +113,8 @@ class Ori_Data():
             leiden_index = self.adata.obs.loc[self.adata.obs[cluster_method] == i].index
             sub_cluster = adata_raw[leiden_index]
             subcluster_adata[i] = sub_cluster
-            '''
-        with ProcessPoolExecutor(max_workers=self.core) as executor:
-            futures = [executor.submit(process_sub_cluster,i,50) for i in subcluster_adata.items()]
-            for future in tqdm(as_completed(futures),total=len(futures),desc="Compute supercell"):
-                merged_data, i, obs = future.result()
-                adList.append(merged_data)
-                adList_obs[i] = obs
-                '''
         for i in subcluster_adata.items():
-            merged_data, i1, obs = process_sub_cluster(i,50)
+            merged_data, i1, obs = process_sub_cluster(i,self.Cell_num,mincell=self.min_cell)
             adList.append(merged_data)
             adList_obs[i1] = obs
         ad_all = ad.concat(adList, join='outer')
@@ -146,70 +140,7 @@ class SCRIPro_Multiome():
         self.cores = cores
         self.Ori_Data = Ori_Data
         self.species = species
-        '''
-    def cal_ISD_parallel(self, bw_path):
-        lisa_test = FromGenes(self.species, rp_map='enhanced_10K', assays=['Direct'], isd_method='chipseq', verbose=0)
-        datainterface = lisa_test.data_interface
-        rpmap_enhanced = datainterface.get_rp_map('enhanced_10K')
-        factor_binging, factor_dataset_ids, factor_metadata = datainterface.get_binding_data(technology='ChIP-seq')
-        final_dict = {}
-        lisa_info = {}
-        for i in self.Ori_Data.marker_list.keys():
-            query_list = self.Ori_Data.marker_list[i]
-            query_genes, background_genes = lisa_test._get_query_and_background_genes(query_list)
-            gene_mask, label_vector, gene_info_dict = lisa_test._make_gene_mask(query_genes, background_genes)
-            lisa_info[i] = [gene_mask, label_vector, gene_info_dict, self.species]
-        results = process_map(process_marker, [(i, lisa_info, bw_path, rpmap_enhanced, factor_binging, factor_metadata, self.species) for i in lisa_info.keys()], max_workers=self.cores)
-        for i, factor_metadata_pd in results:
-            final_dict[i] = factor_metadata_pd
-        self.results = final_dict
-        '''
-    '''
-    def cal_ISD_parallel(self, bw_path):
-        lisa_test = FromGenes(self.species, rp_map='enhanced_10K', assays=['Direct'], isd_method='chipseq', verbose=0)
-        datainterface = lisa_test.data_interface
-        rpmap_enhanced = datainterface.get_rp_map('enhanced_10K')
-        factor_binging, factor_dataset_ids, factor_metadata = datainterface.get_binding_data(technology='ChIP-seq')
-        final_dict = {}
-        lisa_info = {}
-        for i in self.Ori_Data.marker_list.keys():
-            query_list = self.Ori_Data.marker_list[i]
-            query_genes, background_genes = lisa_test._get_query_and_background_genes(query_list)
-            gene_mask, label_vector, gene_info_dict = lisa_test._make_gene_mask(query_genes, background_genes)
-            lisa_info[i] = [gene_mask, label_vector, gene_info_dict, self.species]
-        #tasks = [(i, lisa_info[i], bw_path, rpmap_enhanced, factor_binging, factor_metadata, self.species) for i in lisa_info.keys()]
-        tasks = [(i,) + lisa_info[i] + (bw_path, rpmap_enhanced, factor_binging, factor_metadata, self.species) for i in lisa_info.keys()]
-        results = process_map(process_marker, tasks, max_workers=self.cores)
-        for i, factor_metadata_pd in results:
-            final_dict[i] = factor_metadata_pd
-        self.results = final_dict
 
-    def cal_ISD_parallel(self, bw_path):
-        lisa_test = FromGenes(self.species, rp_map='enhanced_10K', assays=['Direct'], isd_method='chipseq', verbose=0)
-        datainterface = lisa_test.data_interface
-        rpmap_enhanced = datainterface.get_rp_map('enhanced_10K')
-        factor_binging, factor_dataset_ids, factor_metadata = datainterface.get_binding_data(technology='ChIP-seq')
-        final_dict = {}
-        lisa_info = {}
-        for i in self.Ori_Data.marker_list.keys():
-            query_list = self.Ori_Data.marker_list[i]
-            query_genes, background_genes = lisa_test._get_query_and_background_genes(query_list)
-            gene_mask, label_vector, gene_info_dict = lisa_test._make_gene_mask(query_genes, background_genes)
-            lisa_info[i] = [gene_mask, label_vector, gene_info_dict, self.species]
-
-        tasks = [(i, lisa_info, bw_path, rpmap_enhanced, factor_binging, factor_metadata, self.species) for i in lisa_info.keys()]
-        # 使用 Pool.starmap 在多进程中运行 process_marker 函数
-        with Pool(processes=self.cores) as pool:
-            # 这里我们使用 tqdm 来创建进度条
-            results = []
-            for result in tqdm(pool.starmap(process_marker, tasks), total=len(tasks)):
-                results.append(result)
-        # 收集结果
-        for i, factor_metadata_pd in results:
-            final_dict[i] = factor_metadata_pd
-
-        self.results = final_dict
-'''     
     def cal_ISD_parallel(self, bw_path):
         lisa_test = FromGenes(self.species, rp_map='enhanced_10K', assays=['Direct'], isd_method='chipseq', verbose=0)
         datainterface = lisa_test.data_interface

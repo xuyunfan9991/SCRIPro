@@ -28,8 +28,8 @@ from scipy.stats import kendalltau, pearsonr, spearmanr
 from tqdm import tqdm
 
 
-def process_sub_cluster(i,cell_num):
-    merged_data, obs = supercell_pipeline(i[1], cell_num=cell_num, verbose=False)
+def process_sub_cluster(i,cell_num,mincell):
+    merged_data, obs = supercell_pipeline(i[1], cell_num=cell_num, verbose=False,min_cell=mincell)
     merged_data_index = [i[0] + "_" + str(j) for j in range(0, merged_data.shape[0])]
     merged_data.obs = pd.DataFrame(index=merged_data_index)
     return merged_data,i[0],obs
