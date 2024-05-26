@@ -27,7 +27,7 @@ def run_enrich_only_rna(args):
     sc.pp.normalize_total(feature_matrix, target_sum=1e4)
     sc.pp.log1p(feature_matrix)
     sc.pp.highly_variable_genes(feature_matrix,n_top_genes=3000)
-    feature_matrix.raw = feature_matrixq
+    feature_matrix.raw = feature_matrix
     feature_matrix = feature_matrix[:, feature_matrix.var.highly_variable]
     #sc.pp.regress_out(self.adata, ['total_counts', 'pct_counts_mt'])
     sc.pp.scale(feature_matrix, max_value=10)
