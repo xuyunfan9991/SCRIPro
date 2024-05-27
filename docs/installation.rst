@@ -33,7 +33,8 @@ Next, please download the reference files of SCRIPro from `Zenodo <https://zenod
    lisa install mm10 oneshot mm10_scripro.h5
    scripro install_reference -i TF_target_RP.h5
 
-
+Install SCRIP
+~~~~~~~~~~~~~~~~~~~~~
 
 For scATAC-seq only datasets, we recommand to use `SCRIP <https://scrip.readthedocs.io/en/latest/>`_.  
 
