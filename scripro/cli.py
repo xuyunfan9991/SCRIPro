@@ -38,7 +38,7 @@ def run_enrich_only_rna(args):
     print("Calculating supercell...")
     test_data = Ori_Data(feature_matrix,Cell_num=num)
     print("Calculating markergene...")
-    test_data.get_positive_marker_gene_parallel(cores=n_cores)
+    test_data.get_positive_marker_gene_parallel()
     rna_seq_data = SCRIPro_RNA(n_cores,species,test_data,assays=['Direct','DNase','H3K27ac'])
     print("Executing In Silico Deletion")
     rna_seq_data.cal_ISD_cistrome()
@@ -107,7 +107,7 @@ def run_enrich_multiome(args):
     if barcodes == '0':
         print("Calculating Chromatin landscape")
         cellgroup = test_data.adata.obs.loc[:,['new_leiden']]
-        test_data.get_positive_marker_gene_parallel(cores=n_cores)
+        test_data.get_positive_marker_gene_parallel()
         if atac_file_type=='fragment':
             get_supercell_fragment(cellgroup,'.',atac_path,chunksize = 10000000)
             process_tsv('./supercell_fragment/', species)
@@ -157,7 +157,7 @@ def run_enrich_multiome(args):
         cellgroup = pd.DataFrame(atac_leiden_clusters)
         if atac_file_type=='fragment':
             test_data.get_glue_cluster(rna_leiden_clusters)
-            test_data.get_positive_marker_gene_parallel(cores=n_cores)
+            test_data.get_positive_marker_gene_parallel()
             get_supercell_fragment(cellgroup,'.',atac_path,chunksize = 10000000)
             process_tsv('./supercell_fragment/', 'hg38')
         else:
