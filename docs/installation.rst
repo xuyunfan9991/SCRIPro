@@ -25,7 +25,7 @@ Installation
    conda install -c liulab-dfci lisa2
    pip install scripro
 
-Next, please download the reference files of SCRIPro from `Zenodo <https://zenodo.org/records/10554173>`_ and configure it:  
+Next, please download the reference files of SCRIPro from `Zenodo <https://zenodo.org/doi/10.5281/zenodo.10554172>`_ and configure it:  
 
 .. code:: shell
 
