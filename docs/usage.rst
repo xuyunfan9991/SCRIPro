@@ -56,8 +56,8 @@ For enrichment of TF activity for single-cell or spatial RNA-seq data, you can u
 - In this function, you can input the feature count matrix in H5 or MTX format.   
 - The ``-n`` parameter controls how many cells merge into a supercell. This parameter affects the resolution of the results.  
 - This function will output a folder including these files:  
-  - ``xxx``: xxxx.
-  - ``xxx``: xxxx.
+  + ``xxx``: xxxx.
+  + ``xxx``: xxxx.
 
 
 scripro enrich_multiome
@@ -103,8 +103,8 @@ For enrichment of TF activity for both RNA-seq and ATAC-seq for single-cell or s
 - If ``-b`` is set as ``1``, a GTF annotation file need to provide.   
 
 - This function will output a folder including these files:  
-  - ``xxx``: xxxx.
-  - ``xxx``: xxxx.
+  + ``xxx``: xxxx.
+  + ``xxx``: xxxx.
 
 
 scripro get_tf_target
@@ -131,5 +131,5 @@ For getting the target of specific TR, you can use:
 
 - In this function, you can input the results of ``enrich_rna`` or ``enrich_multiome`` and a TF name and will output the target genes of the TF.  
 - This function will output a folder including these files:  
-  - ``xxx``: xxxx.
-  - ``xxx``: xxxx.
+  + ``xxx``: xxxx.
+  + ``xxx``: xxxx.
