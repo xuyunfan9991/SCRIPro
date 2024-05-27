@@ -29,7 +29,7 @@ conda install -c liulab-dfci lisa2
 lisa install hg38 oneshot ./hg38_scripro.h5 --force
 lisa install mm10 oneshot ./mm10_scripro.h5 --force
 ~~~~~
-hg38_scripro.h5 and mm10_scripro.h5 can be downloaded from https://zenodo.org/records/10554173.
+hg38_scripro.h5 and mm10_scripro.h5 can be downloaded from [Zenodo](https://zenodo.org/doi/10.5281/zenodo.10554172).
 ### Install SCRIPro from Github (developing version)
 ```bash
 git clone git@github.com:xuyunfan9991/SCRIPro.git
