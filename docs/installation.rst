@@ -15,18 +15,32 @@ We recommend to create an independent conda environment for SCRIPro. If users do
    wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
    bash Miniconda3-latest-Linux-x86_64.sh
 
-Install from GitHub
+Installation
 ~~~~~~~~~~~~~~~~~~~~~
 
 .. code:: shell
+   conda create -n scripro python=3.8
+   conda activate scripro
+   conda install -c liulab-dfci lisa2
+   pip install scripro
 
-   git clone git@github.com:xuyunfan9991/SCRIPro.git
-   cd SCRIPro
-   python setup.py install
+Next, please download the reference files of SCRIPro from `Zenodo <https://zenodo.org/records/10554173>`_ and configure it:
 
-.. Install from pypi
-.. ~~~~~~~~~~~~~~~~~~~~~
+.. code:: shell
+   lisa install hg38 oneshot hg38_scripro.h5
+   lisa install mm10 oneshot mm10_scripro.h5
+   scripro install_reference -i TF_target_RP.h5
 
-.. .. code:: shell
 
-..    pip install scripro
+
+For scATAC-seq only datasets, we recommand to use `SCRIP <https://scrip.readthedocs.io/en/latest/>`_.
+
+SCRIP requires a separate conda environment, and we recommend that you create a new conda environment to install SCRIP. You can refer to this `webpage <https://scrip.readthedocs.io/en/latest/installation.html>`_ for the SCRIP installation instructions. Below is a simple workflow:
+
+.. code:: shell
+   conda create -n scrip python=3.8
+   conda activate scrip
+   pip install scrip
+   SCRIP install_giggle
+
+The reference files for SCRIP are different from SCRIPro, which you can download from `zenodo <https://zenodo.org/record/5840810>`_ and config with ``SCRIP config``.
