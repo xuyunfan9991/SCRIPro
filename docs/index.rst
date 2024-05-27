@@ -15,11 +15,11 @@ Welcome to SCRIPro's documentation!
 .. |Docs| image:: https://readthedocs.org/projects/scripro/badge/?version=latest
    :target: https://scripro.readthedocs.io
 
-.. |pypi| https://badge.fury.io/py/scripro.svg
+.. |pypi| image:: https://badge.fury.io/py/scripro.svg
 
 .. image:: _static/img/Logo.jpg
    :alt: SCRIPro logo
-   :width: 80%
+   :width: 40%
    :align: center
 
 The increasing availability of single-cell genomics data allows characterizing gene regulation networks (GRNs) at an unprecedented resolution. Previously we developed `SCRIP <https://scrip.readthedocs.io/en/latest/>`_, a computational method that integrates single-cell ATAC-seq data with a large-scale transcription regulator (TR) ChIP-seq data and motif reference for reconstructing single-cell TR activities and GRNs. 
@@ -28,7 +28,7 @@ Here, we present SCRIPro, an extended framework of SCRIP that suits both single-
 
 .. image:: _static/img/workflow_new.png
    :alt: Workflow of SCRIPro
-   :width: 100%
+   :width: 120%
    :align: center
 
 .. toctree::
