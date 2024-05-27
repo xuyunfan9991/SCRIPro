@@ -10,7 +10,7 @@ Welcome to SCRIPro's documentation!
    :maxdepth: 2
    :caption: Contents:
 
-|Docs||pypi|
+|Docs| |pypi|
 
 .. |Docs| image:: https://readthedocs.org/projects/scripro/badge/?version=latest
    :target: https://scripro.readthedocs.io
