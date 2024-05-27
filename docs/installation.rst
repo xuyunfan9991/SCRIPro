@@ -19,28 +19,31 @@ Installation
 ~~~~~~~~~~~~~~~~~~~~~
 
 .. code:: shell
+
    conda create -n scripro python=3.8
    conda activate scripro
    conda install -c liulab-dfci lisa2
    pip install scripro
 
-Next, please download the reference files of SCRIPro from `Zenodo <https://zenodo.org/records/10554173>`_ and configure it:
+Next, please download the reference files of SCRIPro from `Zenodo <https://zenodo.org/records/10554173>`_ and configure it:  
 
 .. code:: shell
+
    lisa install hg38 oneshot hg38_scripro.h5
    lisa install mm10 oneshot mm10_scripro.h5
    scripro install_reference -i TF_target_RP.h5
 
 
 
-For scATAC-seq only datasets, we recommand to use `SCRIP <https://scrip.readthedocs.io/en/latest/>`_.
+For scATAC-seq only datasets, we recommand to use `SCRIP <https://scrip.readthedocs.io/en/latest/>`_.  
 
-SCRIP requires a separate conda environment, and we recommend that you create a new conda environment to install SCRIP. You can refer to this `webpage <https://scrip.readthedocs.io/en/latest/installation.html>`_ for the SCRIP installation instructions. Below is a simple workflow:
+SCRIP requires a separate conda environment, and we recommend that you create a new conda environment to install SCRIP. You can refer to this `webpage <https://scrip.readthedocs.io/en/latest/installation.html>`_ for the SCRIP installation instructions. Below is a simple workflow:  
 
 .. code:: shell
+
    conda create -n scrip python=3.8
    conda activate scrip
    pip install scrip
    SCRIP install_giggle
 
-The reference files for SCRIP are different from SCRIPro, which you can download from `zenodo <https://zenodo.org/record/5840810>`_ and config with ``SCRIP config``.
+The reference files for SCRIP are different from SCRIPro, which you can download from `zenodo <https://zenodo.org/record/5840810>`_ and config with ``SCRIP config``.  
