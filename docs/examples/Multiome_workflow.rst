@@ -1,5 +1,9 @@
 Multiome Workflow
 =======================
+Below is the workflow for SCRIPro's multi-omics data input, which requires paired/unpaired scRNA-seq and scATAC-seq data as input
+
+
+To demonstrate SCRIP's ability to be applied to Multi-omic data, we applied SCRIP to 10X Multiome-seq lymphoma sequencing data.Data are available on https://www.10xgenomics.com/datasets/fresh-frozen-lymph-node-with-b-cell-lymphoma-14-k-sorted-nuclei-1-standard-2-0
 
 
 .. code:: ipython3
