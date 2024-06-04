@@ -127,10 +127,15 @@ For getting the target of specific TR, you can use:
 
 - In this function, you can input the results of ``enrich_rna`` or ``enrich_multiome`` and a TF name and will output the target genes of the TF.  
 - This function will output a csv containing the regulatory activity of tf downstream target genes within each supercell is generated
+
+
+scripro atac
 ~~~~~~~~~~~~~~~~~~
+
 For enrichment of TF activity for single-cell ATAC-seq data, you can use scripro atac command:
 scripro atac act same as SCRIP，the function includs enrich,impute,target,config,and index.
 using example:
+
 .. code:: 
     scripro atac enrich [-h] -i FEATURE_MATRIX -s {hs,mm} [-p PROJECT] [--min_cells MIN_CELLS] [--min_peaks MIN_PEAKS] [--max_peaks MAX_PEAKS] [-t N_CORES] [-m {max,mean}] [-y] [--clean]
 
