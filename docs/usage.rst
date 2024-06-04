@@ -1,22 +1,23 @@
 Usage
 ============
 
-SCRIPro is dedicated for single-cell or spatial RNA-seq datasets and multiome datasets (chromatin accessibility and transcriptome) to explore the gene regulation relationships. The package includes four main functions.  
+SCRIPro is dedicated for single-cell or spatial RNA-seq datasets and multiome datasets (chromatin accessibility and transcriptome) to explore the gene regulation relationships. The package includes five main functions.  
 
 
 .. code:: 
 
-    usage: scripro [-h] [--version] {enrich_rna,enrich_multiome,get_tf_target,install_reference,atac} ...
+    usage: scripro [-h] [--version] {enrich_rna,enrich_multiome,get_tf_target,enrich_atac,install_reference} ...
 
     scripro
 
     positional arguments:
-    {enrich_rna,enrich_multiome,get_tf_target,install_reference,atac}
+    {enrich_rna,enrich_multiome,get_tf_target,enrich_atac,install_reference}
         enrich_rna          Calculate TF activation use scRNA-seq data
         enrich_multiome     Calculate TF activation use scRNA-seq data and scATAC-seq data
-        get_tf_target       Calculate TF and target gene score
+        get_tf_target       Calculate TF and target gene score for scRNA-seq data and sc multiome data
+        enrich_atac         Invoke SCRIP
         install_reference   Install RP reference
-        atac                Invoke SCRIP
+
 
 
     optional arguments:
@@ -30,7 +31,10 @@ Detailed usages are listed as follows:
 scripro enrich_rna
 ~~~~~~~~~~~~~~~~~~
 
-For enrichment of TF activity for single-cell or spatial RNA-seq data, you can use:
+For enrichment of TF activity for single-cell or spatial RNA-seq data, you can use ``scripro enrich_rna``.
+- In this function, you can input the feature count matrix in H5 or MTX format.   
+- The ``-n`` parameter controls how many cells merge into a supercell. This parameter affects the resolution of the results.  
+- This function will output a pkl including the pvalue matrix and tf activity score matrix.
 
 .. code:: 
 
@@ -55,15 +59,19 @@ For enrichment of TF activity for single-cell or spatial RNA-seq data, you can u
     -t N_CORES, --thread N_CORES
                             Number of cores use to run SCRIPro. DEFAULT: 8.
 
-- In this function, you can input the feature count matrix in H5 or MTX format.   
-- The ``-n`` parameter controls how many cells merge into a supercell. This parameter affects the resolution of the results.  
-- This function will output a pkl including the pvalue matrix and tf activity score matrix.
-
 
 scripro enrich_multiome
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
-For enrichment of TF activity for both RNA-seq and ATAC-seq for single-cell or spatial data, you can use:
+For enrichment of TF activity for both RNA-seq and ATAC-seq for single-cell or spatial data, you can use ``scripro enrich_multiome``.
+
+- In this function, you are allowed to input a transcriptome dataset and a chromatin accessibility dataset.  
+- For transcriptome data, a feature count matrix is required. For chromatin accessibility, you can input a fragment file or feature count matrix either.   
+- The ``-n`` parameter controls how many cells merge into a supercell. This parameter affects the resolution of the results.   
+- For barcode matched multiome dataset, like SHARE-seq or 10X multiome dataset, the ``-b`` should be set to ``0``. Otherwise, this should be set as ``1``.  
+- If ``-b`` is set as ``1``, a GTF annotation file need to provide.   
+- This function will output a pkl including the pvalue matrix and tf activity score matrix and a dir named 'bigwig' will also be generated, containing the each supercell's corresponding chromatin landscape file
+
 
 .. code:: 
 
@@ -96,19 +104,15 @@ For enrichment of TF activity for both RNA-seq and ATAC-seq for single-cell or s
     -t N_CORES, --thread N_CORES
                             Number of cores use to run SCRIPros. DEFAULT: 8.
 
-- In this function, you are allowed to input a transcriptome dataset and a chromatin accessibility dataset.  
-- For transcriptome data, a feature count matrix is required. For chromatin accessibility, you can input a fragment file or feature count matrix either.   
-- The ``-n`` parameter controls how many cells merge into a supercell. This parameter affects the resolution of the results.   
-- For barcode matched multiome dataset, like SHARE-seq or 10X multiome dataset, the ``-b`` should be set to ``0``. Otherwise, this should be set as ``1``.  
-- If ``-b`` is set as ``1``, a GTF annotation file need to provide.   
-
-- This function will output a pkl including the pvalue matrix and tf activity score matrix and a dir named 'bigwig' will also be generated, containing the each supercell's corresponding chromatin landscape file
 
 
 scripro get_tf_target
 ~~~~~~~~~~~~~~~~~~~~~~
 
-For getting the target of specific TR, you can use:
+For getting the target of specific TR, you can use ``scripro get_tf_target``.
+
+- In this function, you can input the results of ``enrich_rna`` or ``enrich_multiome`` and a TF name and will output the target genes of the TF.  
+- This function will output a csv containing the regulatory activity of tf downstream target genes within each supercell is generated.
 
 .. code:: 
 
@@ -127,23 +131,36 @@ For getting the target of specific TR, you can use:
     -p PROJECT, --project PROJECT
                             Project name, which will be used to generate output file.
 
-- In this function, you can input the results of ``enrich_rna`` or ``enrich_multiome`` and a TF name and will output the target genes of the TF.  
-- This function will output a csv containing the regulatory activity of tf downstream target genes within each supercell is generated
 
 
-scripro atac
-~~~~~~~~~~~~~~~~~~
 
-For enrichment of TF activity for single-cell ATAC-seq data, you can use ``scripro atac`` command:
-``scripro atac`` act same as ``SCRIP``, the function includs ``enrich``, ``impute``, ``target``, ``config``, and ``index``.
+scripro enrich_atac
+~~~~~~~~~~~~~~~~~~~~
+
+For enrichment of TF activity for single-cell ATAC-seq data, you can use ``scripro enrich_atac`` command:
+``scripro enrich_atac`` act same as ``SCRIP``, the function includs ``enrich``, ``impute``, ``target``, ``config``, and ``index``.
 
 The reference files for SCRIP are different from SCRIPro, which you can download from `zenodo <https://zenodo.org/record/5840810>`_ and config with ``SCRIP config``.  
+
+- In this function, you can input a peak count matrix in H5 or MTX format, with basic parameters of quality control. 
+- This function will output a folder including these files:
+
+    + beds: bed files of all cells
+    + ChIP_result: txt files of Giggle search results
+    + peaks_length.txt: peak total length of each cell
+    + SCRIP_enrichment.txt: the result of the SCRIP score
+    + dataset_overlap_df.pk: the raw number of overlaps of each cell to each dataset
+    + dataset_cell_norm_df.pk: normalized scores
+    + dataset_score_source_df.pk: matched reference datasets
+    + tf_cell_score_df.pk: the same table to SCRIP_enrichment.txt but untransposed and in pickle format
+
+- detail usage see `SCRIP documentation <https://scrip.readthedocs.io/en/latest/usage.html>`_
 
 Using example:
 
 .. code::
 
-    scripro atac enrich [-h] -i FEATURE_MATRIX -s {hs,mm} [-p PROJECT] [--min_cells MIN_CELLS] [--min_peaks MIN_PEAKS] [--max_peaks MAX_PEAKS] [-t N_CORES] [-m {max,mean}] [-y] [--clean]
+    scripro enrich_atac enrich [-h] -i FEATURE_MATRIX -s {hs,mm} [-p PROJECT] [--min_cells MIN_CELLS] [--min_peaks MIN_PEAKS] [--max_peaks MAX_PEAKS] [-t N_CORES] [-m {max,mean}] [-y] [--clean]
 
     optional arguments:
     -h, --help            show this help message and exit
@@ -175,16 +192,4 @@ Using example:
     -y, --yes             Whether ask for confirmation. DEFAULT: False.
     --clean               Whether delete tmp files(including bed and search results) generated by SCRIP. DEFAULT: False.
 
-- In this function, you can input a peak count matrix in H5 or MTX format, with basic parameters of quality control. 
-- This function will output a folder including these files:
 
-    + beds: bed files of all cells
-    + ChIP_result: txt files of Giggle search results
-    + peaks_length.txt: peak total length of each cell
-    + SCRIP_enrichment.txt: the result of the SCRIP score
-    + dataset_overlap_df.pk: the raw number of overlaps of each cell to each dataset
-    + dataset_cell_norm_df.pk: normalized scores
-    + dataset_score_source_df.pk: matched reference datasets
-    + tf_cell_score_df.pk: the same table to SCRIP_enrichment.txt but untransposed and in pickle format
-
-- detail usage see `SCRIP documentation <https://scrip.readthedocs.io/en/latest/usage.html>`_

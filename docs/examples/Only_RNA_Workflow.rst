@@ -28,9 +28,6 @@ Load and preprocess data
 
     rna = sc.read_h5ad('/fs/home/xuyunfan/data/10x/lymph2/rna/rna.h5ad')
     rna.var_names_make_unique()
-
-.. code:: ipython3
-
     rna.raw = rna
     sc.pp.normalize_total(rna, target_sum=1e4)
     sc.pp.log1p(rna)
