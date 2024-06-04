@@ -606,51 +606,26 @@ workflow:
 
     guidance = scglue.genomics.rna_anchored_guidance_graph(rna, atac)
     guidance
-
-
-.. code:: ipython3
-
     scglue.graph.check_graph(guidance, [rna, atac])
-
-
-.. code:: ipython3
-
     scglue.models.configure_dataset(
         rna, "NB", use_highly_variable=True,
         use_layer="counts", use_rep="X_pca"
     )
-
-.. code:: ipython3
-
     scglue.models.configure_dataset(
         atac, "NB", use_highly_variable=True,
         use_rep="X_lsi"
     )
-
-.. code:: ipython3
-
     guidance_hvf = guidance.subgraph(chain(
         rna.var.query("highly_variable").index,
         atac.var.query("highly_variable").index
     )).copy()
-
-.. code:: ipython3
-
     glue = scglue.models.fit_SCGLUE(
         {"rna": rna, "atac": atac}, guidance_hvf,
         fit_kws={"directory": "glue"}
     )
-
-
-.. code:: ipython3
-
     dx = scglue.models.integration_consistency(
         glue, {"rna": rna, "atac": atac}, guidance_hvf
     )
-
-
-.. code:: ipython3
-
     dx
 
 
