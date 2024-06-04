@@ -397,18 +397,8 @@ The computational process of In Silico Deletion
 
 .. code:: ipython3
 
-    %%time
+  
     rna_seq_data.cal_ISD_cistrome()
-
-
-.. parsed-literal::
-
-    100%|██████████████████████████████████████████| 224/224 [43:22<00:00, 11.62s/it]
-
-.. parsed-literal::
-
-    CPU times: user 961 ms, sys: 363 ms, total: 1.32 s
-    Wall time: 43min 22s
 
 
 .. parsed-literal::
