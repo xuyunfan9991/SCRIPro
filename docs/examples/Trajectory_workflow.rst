@@ -39,10 +39,10 @@ calculated TF score
 
 .. code:: ipython3
 
-    miradata = anndata.read_h5ad('/fs/home/xuyunfan/project/scripmulti/mira/trajectory.h5ad')
-    scrip = pd.read_csv('/fs/home/xuyunfan/data/mira/gse/atac/Mouse/enrichment/SCRIP_enrichment.txt',sep='\t',index_col=0)
-    atac = sc.read_h5ad('/fs/home/xuyunfan/project/scripmulti/mira/atac_scrip.h5ad')
-    rna = sc.read_h5ad("/fs/home/xuyunfan/data/mira/shareseq_base_data/rna_data.h5ad")
+    miradata = anndata.read_h5ad('./data/rna/trajectory.h5ad')
+    scrip = pd.read_csv('./enrichment/SCRIP_enrichment.txt',sep='\t',index_col=0)
+    atac = sc.read_h5ad('./data/atac/trajectory.h5ad')
+    rna = sc.read_h5ad("./data/rna/trajectory.h5ad")
     select_cell = list(set(miradata.to_df().index).intersection(scrip.index).intersection(atac.to_df().index).intersection(rna.to_df().index))
     miradata = miradata[select_cell]
     atac =  atac[select_cell]
