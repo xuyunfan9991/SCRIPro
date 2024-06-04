@@ -18,11 +18,11 @@
 # -- Project information -----------------------------------------------------
 
 project = 'SCRIPro'
-copyright = '2023, Wang Lab at Tongji University'
+copyright = '2024, Wang Lab at Tongji University'
 author = 'Yunfan Xu, Zhanhe Chang, Xin Dong'
 
 # The full version, including alpha/beta/rc tags
-release = '0.0.20230914beta'
+release = '1.1.25'
 
 
 # -- General configuration ---------------------------------------------------
@@ -65,11 +65,14 @@ html_css_files = [
 source_suffix = ".rst"
 
 nbsphinx_thumbnails = {
-    # "examples/mouse_embryo": "_static/img/thumbnail/mouse_embryo.png",
+    "examples/Multiome_workflow": "_static/img/Multiome.png",
+    "examples/Trajectory_workflow": "_static/img/Trajectory.png",
+    "examples/Only_RNA_Workflow": "_static/img/OnlyRNA.jpg",
+    "examples/scripro_metacells": "_static/img/supercell.jpg",
 }
 
 html_theme_options = {
   "external_links": [
-      ("Github", "https://github.com/xuyunfan9991/SCRIPro")
+      ("Github", "https://github.com/wanglabtongji/SCRIPro")
   ]
 }
