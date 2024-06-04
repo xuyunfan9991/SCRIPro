@@ -1,6 +1,17 @@
 Multiome Workflow
 =======================
 
+
+.. code:: ipython3
+
+    scripro enrich_multiome -i /fs/home/xuyunfan/data/10x/lymph2/rna/rna.h5ad -n 50 -s hg38 -a matrix -b 0 -f /fs/home/xuyunfan/data/10x/lymph2/atac/atac.h5ad [-g ./gencode.v43.chr_patch_hapl_scaff.annotation.gtf.gz -p multiome -t 12
+
+
+ ========================   
+
+
+
+
 .. code:: ipython3
 
     import anndata as ad
