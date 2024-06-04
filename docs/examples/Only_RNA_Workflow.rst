@@ -1,8 +1,11 @@
 RNA Only Workflow
 -------------------------------
 
+
 This is the most standard SCRIPro computation process, requiring only
-the input of the corresponding scRNA-seq sequencing matrix
+the input of the corresponding scRNA-seq sequencing matrix.
+To demonstrate SCRIP's ability to be applied to different tissue types and infer target genes for TRs, we applied SCRIP to 10X lymphoma sequencing data. Data are available on https://www.10xgenomics.com/datasets/fresh-frozen-lymph-node-with-b-cell-lymphoma-14-k-sorted-nuclei-1-standard-2-0 -0 Download it
+
 
 
 
