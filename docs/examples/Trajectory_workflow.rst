@@ -6,12 +6,14 @@ To test the ability of SCRIPro to apply to continuously differentiated datasets,
 Transcription factor enrichment scores can be obtained by SCRIPro using the following shell statement:
 .. code:: ipython3
 
-    scripro enrich_multiome -i /fs/home/xuyunfan/project/scripmulti/mira/trajectory.h5ad -n 50 -s mm10 -a matrix -b 1 -f /fs/home/xuyunfan/project/scripmulti/mira/atac_scrip.h5ad -g ./gencode.vM25.annotation.gtf.gz -p  Trajectory -t 12
+    scripro enrich_multiome -i ./data/rna/trajectory.h5ad -n 50 -s mm10 -a matrix -b 1 -f ./data/atac/trajectory.h5ad -g ./gencode.vM25.annotation.gtf.gz -p  Trajectory -t 12
 
 Transcription factor enrichment scores can be obtained by SCRIP using the following shell statement:
 
 .. code:: ipython3
-    scripro enrich_atac enrich -i /fs/home/xuyunfan/project/scripmulti/mira/trajectory.h5ad -s mm -p Trajectory  -t 12
+
+
+    scripro enrich_atac enrich -i ./data/atac/trajectory.h5ad -s mm -p Trajectory  -t 12
 
 
 .. code:: ipython3
