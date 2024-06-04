@@ -6,16 +6,18 @@ SCRIPro is dedicated for single-cell or spatial RNA-seq datasets and multiome da
 
 .. code:: 
 
-    usage: scripro [-h] [--version] {enrich_rna,enrich_multiome,get_tf_target,install_reference} ...
+    usage: scripro [-h] [--version] {enrich_rna,enrich_multiome,get_tf_target,install_reference,atac} ...
 
     scripro
 
     positional arguments:
-    {enrich_rna,enrich_multiome,get_tf_target,install_reference}
+    {enrich_rna,enrich_multiome,get_tf_target,install_reference,atac}
         enrich_rna          Calculate TF activation use scRNA-seq data
         enrich_multiome     Calculate TF activation use scRNA-seq data and scATAC-seq data
         get_tf_target       Calculate TF and target gene score
         install_reference   Install RP reference
+        atac                Invoke SCRIP
+
 
     optional arguments:
     -h, --help            show this help message and exit
@@ -59,7 +61,7 @@ For enrichment of TF activity for single-cell or spatial RNA-seq data, you can u
 
 
 scripro enrich_multiome
-~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~
 
 For enrichment of TF activity for both RNA-seq and ATAC-seq for single-cell or spatial data, you can use:
 
@@ -104,7 +106,7 @@ For enrichment of TF activity for both RNA-seq and ATAC-seq for single-cell or s
 
 
 scripro get_tf_target
-~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~
 
 For getting the target of specific TR, you can use:
 
@@ -132,11 +134,15 @@ For getting the target of specific TR, you can use:
 scripro atac
 ~~~~~~~~~~~~~~~~~~
 
-For enrichment of TF activity for single-cell ATAC-seq data, you can use scripro atac command:
-scripro atac act same as SCRIP，the function includs enrich,impute,target,config,and index.
-using example:
+For enrichment of TF activity for single-cell ATAC-seq data, you can use ``scripro atac`` command:
+``scripro atac`` act same as ``SCRIP``, the function includs ``enrich``, ``impute``, ``target``, ``config``, and ``index``.
 
-.. code:: 
+The reference files for SCRIP are different from SCRIPro, which you can download from `zenodo <https://zenodo.org/record/5840810>`_ and config with ``SCRIP config``.  
+
+Using example:
+
+.. code::
+
     scripro atac enrich [-h] -i FEATURE_MATRIX -s {hs,mm} [-p PROJECT] [--min_cells MIN_CELLS] [--min_peaks MIN_PEAKS] [--max_peaks MAX_PEAKS] [-t N_CORES] [-m {max,mean}] [-y] [--clean]
 
     optional arguments:
@@ -172,20 +178,13 @@ using example:
 - In this function, you can input a peak count matrix in H5 or MTX format, with basic parameters of quality control. 
 - This function will output a folder including these files:
 
-    beds: bed files of all cells
+    + beds: bed files of all cells
+    + ChIP_result: txt files of Giggle search results
+    + peaks_length.txt: peak total length of each cell
+    + SCRIP_enrichment.txt: the result of the SCRIP score
+    + dataset_overlap_df.pk: the raw number of overlaps of each cell to each dataset
+    + dataset_cell_norm_df.pk: normalized scores
+    + dataset_score_source_df.pk: matched reference datasets
+    + tf_cell_score_df.pk: the same table to SCRIP_enrichment.txt but untransposed and in pickle format
 
-    ChIP_result: txt files of Giggle search results
-
-    qpeaks_length.txt: peak total length of each cell
-
-    SCRIP_enrichment.txt: the result of the SCRIP score
-
-    dataset_overlap_df.pk: the raw number of overlaps of each cell to each dataset
-
-    dataset_cell_norm_df.pk: normalized scores
-
-    dataset_score_source_df.pk: matched reference datasets
-
-    tf_cell_score_df.pk: the same table to SCRIP_enrichment.txt but untransposed and in pickle format
-- detail usage see https://scrip.readthedocs.io/en/latest/usage.html
-~~~~~~~~~~~~~~~~~~
+- detail usage see `SCRIP documentation <https://scrip.readthedocs.io/en/latest/usage.html>`_

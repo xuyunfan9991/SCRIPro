@@ -33,18 +33,21 @@ Next, please download the reference files of SCRIPro from `Zenodo <https://zenod
    lisa install mm10 oneshot mm10_scripro.h5
    scripro install_reference -i TF_target_RP.h5
 
-Install SCRIP
+
+
+Install STAGATE
 ~~~~~~~~~~~~~~~~~~~~~
 
-For scATAC-seq only datasets, we recommand to use `SCRIP <https://scrip.readthedocs.io/en/latest/>`_.  
 
-SCRIP requires a separate conda environment, and we recommend that you create a new conda environment to install SCRIP. You can refer to this `webpage <https://scrip.readthedocs.io/en/latest/installation.html>`_ for the SCRIP installation instructions. Below is a simple workflow:  
+`STAGATE <https://github.com/QIFEIDKN/STAGATE>`_ is designed for spatial clustering and denoising expressions of spatial resolved transcriptomics (ST) data.
+
+To install STAGATE, use:
 
 .. code:: shell
 
-   conda create -n scrip python=3.8
-   conda activate scrip
-   pip install scrip
-   SCRIP install_giggle
+   git clone git@github.com:QIFEIDKN/STAGATE.git
+   cd STAGATE-main
+   python setup.py build
+   python setup.py install
 
-The reference files for SCRIP are different from SCRIPro, which you can download from `zenodo <https://zenodo.org/record/5840810>`_ and config with ``SCRIP config``.  
+

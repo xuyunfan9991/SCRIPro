@@ -4,7 +4,7 @@
    contain the root `toctree` directive.
 
 Welcome to SCRIPro's documentation!
-==================================
+====================================
 
 .. toctree::
    :maxdepth: 2
@@ -28,7 +28,7 @@ Here, we present SCRIPro, an extended framework of SCRIP that suits both single-
 
 .. image:: _static/img/workflow_new.png
    :alt: Workflow of SCRIPro
-   :width: 120%
+   :width: 100%
    :align: center
 
 .. toctree::
