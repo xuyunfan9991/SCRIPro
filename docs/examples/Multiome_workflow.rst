@@ -5,6 +5,7 @@ Below is the workflow for SCRIPro's multi-omics data input, which requires paire
 
 To demonstrate SCRIP's ability to be applied to Multi-omic data, we applied SCRIP to 10X Multiome-seq lymphoma sequencing data.Data are available on https://www.10xgenomics.com/datasets/fresh-frozen-lymph-node-with-b-cell-lymphoma-14-k-sorted-nuclei-1-standard-2-0 .
 
+Transcription factor enrichment scores can be obtained by SCRIPro using the following shell statement:
 
 .. code:: ipython3
 
