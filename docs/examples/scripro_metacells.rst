@@ -1,9 +1,16 @@
 Metacell & Supercell Comparison
 ----------------------------------
 
+To test SCRIPro's ability to explore the intensity of transcription factor regulation, we applied it to a CRISPRa activated T cell single-cell sequencing data set to calculate AUROC and AUPRC using the activated Label per cell as the gold standard,and this data can be downloaded from http://www.perturbase.cn/download (PRJNA787633).
+
+In this notebook, we use the cell clustering results obtained by metacell to replace the Supercell clustering results and test Metacell's ability to extract heterogeneous cells.
+
+
+
+Transcription factor enrichment scores can be obtained by SCRIPro using the following shell statement:
 .. code:: ipython3
 
-    SCRIPro enrich -i /fs/home/xuyunfan/Final/review/data/raw.h5ad -n 50 -s hs -p rna_workflow -t 32
+    SCRIPro enrich -i ./data/raw.h5ad -n 50 -s hs -p rna_workflow -t 32
 
 
  ========================   
@@ -37,9 +44,9 @@ contain raw data, we download raw data for re-processing
 
 .. code:: ipython3
 
-    #rna = sc.read_h5ad('/fs/home/xuyunfan/data/ORF/select_tf.h5ad')
-    rna = sc.read_h5ad('/fs/home/xuyunfan/Final/review/data/perturb_data.h5ad')
-    rna_raw = sc.read_h5ad('/fs/home/xuyunfan/Final/review/data/raw.h5ad')
+   
+    rna = sc.read_h5ad('./data/perturb_data.h5ad')
+    rna_raw = sc.read_h5ad('./data/raw.h5ad')
     rna_raw=rna_raw[rna.obs.index]
     sc.pp.normalize_total(rna_raw, target_sum=1e4)
     sc.pp.log1p(rna_raw)
