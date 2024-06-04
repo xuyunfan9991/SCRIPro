@@ -6,7 +6,6 @@ from pathlib import Path
 from scipy import sparse, stats
 import anndata as ad
 import h5py
-import STAGATE
 import matplotlib
 import matplotlib.pyplot as plt
 import multiprocessing
@@ -43,8 +42,12 @@ def get_marker_for_group(adata, i,gene_list_len):
         return i, tem_gene
 
 def spatial_clustering(adata,rad_cutoff,alpha):
-    STAGATE.Cal_Spatial_Net(adata,rad_cutoff=rad_cutoff)
-    return STAGATE.train_STAGATE(adata, alpha=alpha)
+    try:
+        import  STAGATE
+        STAGATE.Cal_Spatial_Net(adata,rad_cutoff=rad_cutoff)
+        return STAGATE.train_STAGATE(adata, alpha=alpha)
+    except:
+        print('STAGATE did not download! Download as described in https://github.com/QIFEIDKN/STAGATE')
     
 def dataframe_to_sparse_tsv(df, filename):
     sparse_df = df.astype(pd.SparseDtype("float", 0.0))
