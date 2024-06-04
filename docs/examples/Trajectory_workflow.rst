@@ -1,6 +1,14 @@
 Trajectory & ATAC Only Workflow
 ===============================
 
+
+.. code:: ipython3
+
+    scripro enrich_multiome -i /fs/home/xuyunfan/project/scripmulti/mira/trajectory.h5ad -n 50 -s mm10 -a matrix -b 1 -f /fs/home/xuyunfan/project/scripmulti/mira/atac_scrip.h5ad -g ./gencode.vM25.annotation.gtf.gz -p  Trajectory -t 12
+
+
+
+
 .. code:: ipython3
 
     import scripro
