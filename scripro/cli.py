@@ -1,5 +1,6 @@
 import argparse
 import pickle
+import subprocess
 from .supercell import *
 from .utils import *
 from .Ori_data import *
@@ -9,6 +10,14 @@ import warnings
 from shutil import copyfile
 warnings.filterwarnings("ignore")
 
+
+def run_scrip(args):
+    """调用SCRIP命令"""
+    result = subprocess.run(['SCRIP'] + args.scrip_args, capture_output=True, text=True)
+    print(result.stdout)
+    
+    
+    
 def run_enrich_only_rna(args):
     feature_matrix_path = args.feature_matrix
     num = args.cell_num
@@ -194,47 +203,54 @@ def get_reference_data(args):
     copyfile(args.reference,target_h5_path)
     return 
 
+
 def main():
     warnings.filterwarnings("ignore")
     argparser = prepare_argparser()
     args = argparser.parse_args()
-    subcommand  = args.subcommand
+    subcommand = args.subcommand
     if subcommand == "enrich_rna":
         try:
             run_enrich_only_rna(args)
         except MemoryError:
-            sys.exit( "MemoryError occurred.")
+            sys.exit("MemoryError occurred.")
     elif subcommand == "enrich_multiome":
         try:
             run_enrich_multiome(args)
         except MemoryError:
-            sys.exit( "MemoryError occurred.")
+            sys.exit("MemoryError occurred.")
     elif subcommand == "get_tf_target":
         try:
             get_target_score(args)
         except MemoryError:
-            sys.exit( "MemoryError occurred.")
+            sys.exit("MemoryError occurred.")
     elif subcommand == "install_reference":
         try:
             get_reference_data(args)
         except MemoryError:
-            sys.exit( "MemoryError occurred.")
+            sys.exit("MemoryError occurred.")
+    elif subcommand == "atac":
+        try:
+            run_scrip(args)
+        except MemoryError:
+            sys.exit("MemoryError occurred.")
+
             
             
 
-    return
 
 def prepare_argparser():
     description = "%(prog)s"
     epilog = "For command line options of each command, type: %(prog)s COMMAND -h"
-    argparser = argparse.ArgumentParser( description = description, epilog = epilog )
-    argparser.add_argument( "--version", action="version", version="1.1.12")
-    subparsers = argparser.add_subparsers( dest = 'subcommand' )
+    argparser = argparse.ArgumentParser(description=description, epilog=epilog)
+    argparser.add_argument("--version", action="version", version="1.1.12")
+    subparsers = argparser.add_subparsers(dest='subcommand')
     subparsers.required = True
     add_enrich_parser(subparsers)
     add_enrich_parser_multiome(subparsers)
     add_target_parser(subparsers)
     add_reference_parser(subparsers)
+    add_scrip_parser(subparsers)# 新增的SCRIP ATAC子命令
     return argparser
 
 
@@ -262,6 +278,13 @@ def add_enrich_parser( subparsers ):
     group_other.add_argument( "-t", '--thread', dest='n_cores', type = int, default = 8,
                               help="Number of cores use to run SCRIPro. DEFAULT: 8.")
 
+
+    
+def add_scrip_parser(subparsers):
+    """添加SCRIP命令的参数解析器"""
+    parser = subparsers.add_parser("atac", help="调用SCRIP命令")
+    parser.add_argument('scrip_args', nargs=argparse.REMAINDER, help="传递给SCRIP命令的额外参数")
+    
     
 def add_enrich_parser_multiome( subparsers ):
     """Add main function 'enrich' argument parsers.
@@ -321,8 +344,9 @@ def add_reference_parser( subparsers ):
     group_input = argparser_target.add_argument_group( "Input files arguments" )
     group_input.add_argument( "-i", "--input_scripro_reference", dest = "reference", type = str, required = True,
                               help = 'scripro RP reference file. REQUIRED.' )
+
     
-    
+  
 if __name__ == '__main__':
     warnings.filterwarnings("ignore")
     try:

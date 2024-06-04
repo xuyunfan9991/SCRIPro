@@ -27,19 +27,19 @@ from concurrent.futures import ProcessPoolExecutor, as_completed
 from tqdm import tqdm
 from scipy.stats import kendalltau, pearsonr, spearmanr
 class Ori_Data():
-    def __init__(self,adata,Cell_num,use_glue = False,cluster_method='leiden',cores = 1,min_cell=30):
+    def __init__(self,adata,Cell_num,use_glue = False,cluster_method='leiden',cores = 1):
         self.adata = adata[:, ~adata.var_names.str.contains('\.|\-')]
         self.Cell_num = Cell_num
         self.cluster_method = cluster_method
         self.core = cores
-        self.min_cell=min_cell
         if use_glue == False:
             #self._fliter()
             self._supercell(cluster_method=self.cluster_method)
             self.super_gene_exp = self.ad_all.copy()
             self.super_gene_mean = self.super_gene_exp.mean()
             self.super_gene_std = self.super_gene_exp.std()
-            self.cellgroup = pd.DataFrame(self.adata.obs.iloc[:,-1]) 
+            self.cellgroup = pd.DataFrame(self.adata.obs.iloc[:,-1])
+                
     def get_glue_cluster(self,rna_leiden_clusters):
         self.adata.obs['new_leiden'] = rna_leiden_clusters[self.adata.obs.index]
         self.ad_all=pd.DataFrame(self.adata.raw.X,index=self.adata.raw.obs_names,columns=self.adata.raw.var_names).groupby(self.adata.obs['new_leiden']).mean()
@@ -61,6 +61,7 @@ class Ori_Data():
         sc.tl.leiden(self.adata, resolution=Resolution)
         sc.pl.embedding(self.adata, basis="spatial", color=['leiden'],s=6, show=False, title='SCRIPro',save="Spatial_cluster.pdf")
         sc.pl.umap(self.adata, color=['leiden'],show=False,save="Spatial_umap_leiden.pdf")
+        sc.tl.leiden(self.adata, resolution=1.2,key_added = "leiden")
     
     def _fliter(self,Target_sum=1e4,N_top_genes=3000,Max_value=10,N_neighbors=10,N_pcs=40,Resolution=0.6):
         sc.pp.normalize_total(self.adata, target_sum=Target_sum)
@@ -140,7 +141,6 @@ class SCRIPro_Multiome():
         self.cores = cores
         self.Ori_Data = Ori_Data
         self.species = species
-
     def cal_ISD_parallel(self, bw_path):
         lisa_test = FromGenes(self.species, rp_map='enhanced_10K', assays=['Direct'], isd_method='chipseq', verbose=0)
         datainterface = lisa_test.data_interface
@@ -234,6 +234,12 @@ class SCRIPro_Multiome():
         
         self.tf_score = test_mat
         target_h5.close()
+        
+    def get_tf_score(self):
+        self.get_P_value_matrix()
+        self.get_chip_matrix()
+        self.get_tf()
+        
     def get_tf_only_target(self):
         target_h5=pkg_resources.resource_filename('scripro', 'data/TF_target_RP.h5')
         super_gene_exp = self.Ori_Data.super_gene_exp

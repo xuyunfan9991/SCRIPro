@@ -6,6 +6,7 @@ from pathlib import Path
 from scipy import sparse, stats
 import anndata as ad
 import h5py
+import STAGATE
 import matplotlib
 import matplotlib.pyplot as plt
 import multiprocessing
@@ -41,6 +42,10 @@ def get_marker_for_group(adata, i,gene_list_len):
     else:
         return i, tem_gene
 
+def spatial_clustering(adata,rad_cutoff,alpha):
+    STAGATE.Cal_Spatial_Net(adata,rad_cutoff=rad_cutoff)
+    return STAGATE.train_STAGATE(adata, alpha=alpha)
+    
 def dataframe_to_sparse_tsv(df, filename):
     sparse_df = df.astype(pd.SparseDtype("float", 0.0))
     coo_matrix = sparse_df.sparse.to_coo()
