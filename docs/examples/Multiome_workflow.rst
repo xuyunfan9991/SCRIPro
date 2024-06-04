@@ -1,4 +1,4 @@
-Multiome_workflow
+Multiome Workflow
 =======================
 
 .. code:: ipython3
