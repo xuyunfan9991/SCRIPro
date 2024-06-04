@@ -4,17 +4,27 @@ RNA Only Workflow
 
 This is the most standard SCRIPro computation process, requiring only
 the input of the corresponding scRNA-seq sequencing matrix.
-To demonstrate SCRIP's ability to be applied to different tissue types and infer target genes for TRs, we applied SCRIP to 10X lymphoma sequencing data. Data are available on https://www.10xgenomics.com/datasets/fresh-frozen-lymph-node-with-b-cell-lymphoma-14-k-sorted-nuclei-1-standard-2-0 -0 Download it
+To demonstrate SCRIP's ability to be applied to different tissue types and infer target genes for TRs, we applied SCRIP to 10X lymphoma sequencing data. Data are available on https://www.10xgenomics.com/datasets/fresh-frozen-lymph-node-with-b-cell-lymphoma-14-k-sorted-nuclei-1-standard-2-0
 
 
-
+The resulting tf_score matrix can be obtained by using the following shell statement:
 
 .. code:: ipython3
 
     SCRIPro enrich -i /fs/home/xuyunfan/data/10x/lymph2/rna/rna.h5ad -n 50 -s hs -p rna_workflow -t 32
 
 
- ========================   
+ ========================
+   
+The resulting gata3_score matrix can be obtained through the following shell statement, where rna_workflow.pkl is the result of SCRIPro enrich:
+
+
+.. code:: ipython3
+
+    scripro get_tf_target -i rna_workflow.pkl -t GATA3 -p GATA3_target
+
+
+ ========================
 
 
 .. code:: ipython3
