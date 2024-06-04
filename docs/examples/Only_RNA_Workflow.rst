@@ -5,11 +5,12 @@ This is the most standard SCRIPro computation process, requiring only
 the input of the corresponding scRNA-seq sequencing matrix
 
 .. code:: ipython3
+
     SCRIPro enrich -i /fs/home/xuyunfan/data/10x/lymph2/rna/rna.h5ad -s hs -p rna_workflow -t 32
+
+
  ========================   
 
-This is the most standard SCRIPro computation process, requiring only
-the input of the corresponding scRNA-seq sequencing matrix
 
 .. code:: ipython3
 
