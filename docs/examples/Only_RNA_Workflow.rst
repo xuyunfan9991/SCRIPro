@@ -11,7 +11,7 @@ The resulting tf_score matrix can be obtained by using the following shell state
 
 .. code:: ipython3
 
-    SCRIPro enrich -i /fs/home/xuyunfan/data/10x/lymph2/rna/rna.h5ad -n 50 -s hs -p rna_workflow -t 32
+    scripro enrich -i /fs/home/xuyunfan/data/10x/lymph2/rna/rna.h5ad -n 50 -s hs -p rna_workflow -t 32
 
 
  ========================
