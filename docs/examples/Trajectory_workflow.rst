@@ -4,6 +4,8 @@ Trajectory & ATAC Only Workflow
 To test the ability of SCRIPro to apply to continuously differentiated datasets, we applied it to SHARE-seq sequenced mouse hair follicle development data (which can be downloaded from https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE140203), where transcriptome and epigenome data were used to infer transcription factor enrichment scores, respectively, and examine the spatio-temporal heterogeneity of transcription factor function.
 
 Transcription factor enrichment scores can be obtained by SCRIPro using the following shell statement:
+
+
 .. code:: ipython3
 
     scripro enrich_multiome -i ./data/rna/trajectory.h5ad -n 50 -s mm10 -a matrix -b 1 -f ./data/atac/trajectory.h5ad -g ./gencode.vM25.annotation.gtf.gz -p  Trajectory -t 12
