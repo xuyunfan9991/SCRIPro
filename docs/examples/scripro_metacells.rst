@@ -3,6 +3,17 @@ Metacell & Supercell Comparison
 
 .. code:: ipython3
 
+    SCRIPro enrich -i /fs/home/xuyunfan/Final/review/data/raw.h5ad -n 50 -s hs -p rna_workflow -t 32
+
+
+ ========================   
+
+
+
+
+
+.. code:: ipython3
+
     import numpy as np
     import pandas as pd
     import scanpy as sc
