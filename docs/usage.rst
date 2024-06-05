@@ -110,7 +110,7 @@ scripro enrich_atac
 ~~~~~~~~~~~~~~~~~~~~
 
 For enrichment of TF activity for single-cell ATAC-seq data, you can use ``scripro enrich_atac`` command:
-``scripro enrich_atac`` act same as ``SCRIP``, the function includs ``enrich``, ``impute``, ``target``, ``config``, and ``index``.
+``scripro enrich_atac`` act same as ``SCRIP``, the function includes ``enrich``, ``impute``, ``target``, ``config``, and ``index``.
 
 The reference files for SCRIP are different from SCRIPro, which you can download from `zenodo <https://zenodo.org/record/5840810>`_ and config with ``SCRIP config``.  
 
