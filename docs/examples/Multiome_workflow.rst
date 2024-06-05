@@ -2,22 +2,24 @@ Multiome Workflow
 =======================
 Below is the workflow for SCRIPro's multi-omics data input, which requires paired/unpaired scRNA-seq and scATAC-seq data as input.
 
-
 To demonstrate SCRIP's ability to be applied to Multi-omic data, we applied SCRIP to 10X Multiome-seq lymphoma sequencing data.Data are available on https://www.10xgenomics.com/datasets/fresh-frozen-lymph-node-with-b-cell-lymphoma-14-k-sorted-nuclei-1-standard-2-0 .
+
+Using Shell: 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Transcription factor enrichment scores can be obtained by SCRIPro using the following shell statement:
 
-.. code:: ipython3
+.. code:: shell
 
     scripro enrich_multiome -i ./data/rna/rna.h5ad -n 50 -s hg38 -a matrix -b 0 -f ./data/atac/atac.h5ad -g./gencode.v43.chr_patch_hapl_scaff.annotation.gtf.gz -p multiome -t 12
 
 
- ========================   
+========================   
 
+Using Python for custom analysis:
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-
-
-.. code:: ipython3
+.. code:: python
 
     import anndata as ad
     import networkx as nx
@@ -38,7 +40,7 @@ Load data
 
 Respectively loaded ATAC-seq and RNA-seq data.
 
-.. code:: ipython3
+.. code:: python
 
     scglue.plot.set_publication_params()
     rcParams["figure.figsize"] = (4, 4)
@@ -53,7 +55,7 @@ Use GLUE to compute scATAC-matched scRNA barcodes
 Here, we use GLUE to align the two omics data,here is the normal GLUE
 workflow:
 
-.. code:: ipython3
+.. code:: python
 
     atac.var_names_make_unique()
     rna.layers["counts"] = rna.X.copy()
@@ -73,7 +75,7 @@ workflow:
    :height: 278px
 
 
-.. code:: ipython3
+.. code:: python
 
     scglue.data.lsi(atac, n_components=5, n_iter=15)
     sc.pp.neighbors(atac, use_rep="X_lsi", metric="cosine")
@@ -87,15 +89,12 @@ workflow:
    :height: 278px
 
 
-.. code:: ipython3
+.. code:: python
 
     scglue.data.get_gene_annotation(
         rna, gtf="../data/gencode.v43.chr_patch_hapl_scaff.annotation.gtf.gz",
         gtf_by="gene_name"
     )
-
-.. code:: ipython3
-
     rna.var.loc[:, ["chrom", "chromStart", "chromEnd"]]
 
 
@@ -200,16 +199,10 @@ workflow:
 
 
 
-.. code:: ipython3
+.. code:: python
 
     genes_to_remove = rna.var[~(rna.var.loc[:,"chromStart"]>0)].index
-
-.. code:: ipython3
-
     rna = rna[:, ~rna.var.index.isin(genes_to_remove)]
-
-.. code:: ipython3
-
     atac.var_names[:5]
 
 
@@ -223,7 +216,7 @@ workflow:
 
 
 
-.. code:: ipython3
+.. code:: python
 
     split = atac.var_names.str.split(r"[_]")
     atac.var["chrom"] = split.map(lambda x: x[0])
@@ -296,7 +289,7 @@ workflow:
 
 
 
-.. code:: ipython3
+.. code:: python
 
     rna.var
 
@@ -618,7 +611,7 @@ workflow:
 
 
 
-.. code:: ipython3
+.. code:: python
 
     guidance = scglue.genomics.rna_anchored_guidance_graph(rna, atac)
     guidance
@@ -703,7 +696,7 @@ workflow:
 
 
 
-.. code:: ipython3
+.. code:: python
 
     _ = sns.lineplot(x="n_meta", y="consistency", data=dx).axhline(y=0.05, c="darkred", ls="--")
 
@@ -714,13 +707,10 @@ workflow:
    :height: 300px
 
 
-.. code:: ipython3
+.. code:: python
 
     rna.obsm["X_glue"] = glue.encode_data("rna", rna)
     atac.obsm["X_glue"] = glue.encode_data("atac", atac)
-
-.. code:: ipython3
-
     rna
 
 
@@ -739,7 +729,7 @@ workflow:
 
 
 
-.. code:: ipython3
+.. code:: python
 
     atac
 
@@ -757,7 +747,7 @@ workflow:
 
 
 
-.. code:: ipython3
+.. code:: python
 
     rna.obs['feature']='rna'
     atac.obs['feature']='atac'
@@ -775,7 +765,7 @@ workflow:
 
 
 
-.. code:: ipython3
+.. code:: python
 
     sc.pp.neighbors(combined, use_rep="X_glue", metric="cosine")
     sc.tl.umap(combined)
@@ -788,12 +778,9 @@ workflow:
    :height: 278px
 
 
-.. code:: ipython3
+.. code:: python
 
     sc.tl.leiden(combined,resolution=0.8)
-
-.. code:: ipython3
-
     sc.pl.umap(combined,color='leiden')
 
 
@@ -803,7 +790,7 @@ workflow:
    :height: 296px
 
 
-.. code:: ipython3
+.. code:: python
 
     combined
 
@@ -820,7 +807,7 @@ workflow:
 
 
 
-.. code:: ipython3
+.. code:: python
 
     combined_rna = combined[combined.obs.feature == 'rna']
     combined_rna
@@ -838,7 +825,7 @@ workflow:
 
 
 
-.. code:: ipython3
+.. code:: python
 
     combined_rna.obs
 
@@ -944,20 +931,11 @@ workflow:
 
 
 
-.. code:: ipython3
+.. code:: python
 
     combined_rna.obs.loc[:,'new_leiden'] = np.nan
-
-.. code:: ipython3
-
     scripro.glue_supercell(combined_rna,50)
-
-.. code:: ipython3
-
     rna_leiden_clusters = combined_rna.obs['new_leiden']
-
-.. code:: ipython3
-
     rna_leiden_clusters
 
 
@@ -985,17 +963,11 @@ dataset Combined, then divide supercell using the RNA-seq data region,
 and assign the corresponding supercell to the corresponding ATAC-seq
 data.
 
-.. code:: ipython3
+.. code:: python
 
     combined_atac = combined[combined.obs.feature == 'atac']
-
-.. code:: ipython3
-
     distance_matrix = cdist(combined_atac.obsm['X_umap'], combined_rna.obsm['X_umap'], metric='euclidean')
     nearest_rna = np.argmin(distance_matrix, axis=1)
-
-.. code:: ipython3
-
     nearest_rna
 
 
@@ -1007,24 +979,12 @@ data.
 
 
 
-.. code:: ipython3
+.. code:: python
 
     atac_leiden_clusters = rna_leiden_clusters[nearest_rna]
-
-.. code:: ipython3
-
     atac_leiden_clusters.index = combined_atac.obs.index
-
-.. code:: ipython3
-
     rna.obs = combined_rna.obs
-
-.. code:: ipython3
-
     cellgroup = pd.DataFrame(atac_leiden_clusters)
-
-.. code:: ipython3
-
     cellgroup 
 
 
@@ -1108,97 +1068,31 @@ data.
 Calculate Supercell and markergene
 ----------------------------------
 
-.. code:: ipython3
+.. code:: python
 
     test_data = scripro.Ori_Data(rna,Cell_num=50,use_glue = True)
-
-.. code:: ipython3
-
     test_data.get_glue_cluster(rna_leiden_clusters)
-
-.. code:: ipython3
-
     test_data.get_positive_marker_gene_parallel()
 
 The data from ATAC-seq is used to generate the corresponding chromatin
 landscape, that is the bigwig file corresponding to supercell of the
 same name, which is stored in the folder ‘./bigwig’.
 
-.. code:: ipython3
+.. code:: python
 
     scripro.dataframe_to_sparse_tsv(atac.to_df(), 'test.tsv')
-
-.. code:: ipython3
-
     scripro.get_supercell_fragment(cellgroup,'.','./test.tsv',chunksize = 10000000)
-
-
-.. parsed-literal::
-
-    7it [01:42, 14.67s/it]
-
-.. parsed-literal::
-
-    final
-
-
-.. parsed-literal::
-
-    
-
-
-.. code:: ipython3
-
     scripro.process_tsv('./supercell_fragment/', 'hg38')
-
-
-.. parsed-literal::
-
-    Sort tsv files
-    Merge tsv files
-    Convert tsv to bigwig format
-
-
-.. code:: ipython3
-
     share_seq_data = scripro.SCRIPro_Multiome(8,'hg38',test_data)
 
 Calculate the TF activity score
 -------------------------------
 
-.. code:: ipython3
+.. code:: python
 
-    %%time
     share_seq_data.cal_ISD_parallel('./bigwig/')
-
-
-.. parsed-literal::
-
-    Processing markers: 100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 163/163 [45:03<00:00, 16.58s/it]
-
-
-.. parsed-literal::
-
-    CPU times: user 1min 30s, sys: 2min 24s, total: 3min 54s
-    Wall time: 46min 3s
-
-
-.. code:: ipython3
-
     share_seq_data.get_tf_score()
-
-.. code:: ipython3
-
     sns.clustermap(share_seq_data.tf_score)
-
-
-
-
-.. parsed-literal::
-
-    <seaborn.matrix.ClusterGrid at 0x7fc05dafa0a0>
-
-
 
 
 .. image:: Multiome_workflow_files/Multiome_workflow_72_1.png

@@ -6,20 +6,22 @@ To test SCRIPro's ability to explore the intensity of transcription factor regul
 In this notebook, we use the cell clustering results obtained by metacell to replace the Supercell clustering results and test Metacell's ability to extract heterogeneous cells.
 
 
+Using Shell: 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Transcription factor enrichment scores can be obtained by SCRIPro using the following shell statement:
-.. code:: ipython3
+
+.. code:: shell
 
     SCRIPro enrich -i ./data/raw.h5ad -n 50 -s hs -p rna_workflow -t 32
 
 
- ========================   
+###############################
 
+Using Python for custom analysis:
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-
-
-
-.. code:: ipython3
+.. code:: python
 
     import numpy as np
     import pandas as pd
@@ -42,7 +44,7 @@ Load and process data
 Load data and raw data. Since the processed data downloaded does not
 contain raw data, we download raw data for re-processing
 
-.. code:: ipython3
+.. code:: python
 
    
     rna = sc.read_h5ad('./data/perturb_data.h5ad')
@@ -285,7 +287,7 @@ replace supercell data with metacell data
 Load the metacell data calculated by metacell, then replace supercell
 data with metacell data (new_leiden column)
 
-.. code:: ipython3
+.. code:: python
 
     metacell = pd.read_csv('./metacells.csv')
     metacell
@@ -464,12 +466,9 @@ data with metacell data (new_leiden column)
 
 
 
-.. code:: ipython3
+.. code:: python
 
     test_data.adata.obs.new_leiden=list(metacell.metacell)
-
-.. code:: ipython3
-
     test_data.adata.obs
 
 
@@ -710,7 +709,7 @@ data with metacell data (new_leiden column)
 
 
 
-.. code:: ipython3
+.. code:: python
 
     test_data.adata.obs['new_leiden'] = test_data.adata.obs['new_leiden'].astype(str)
     test_data.get_positive_marker_gene_parallel()
@@ -719,7 +718,7 @@ data with metacell data (new_leiden column)
 Calculating ISD
 ===============
 
-.. code:: ipython3
+.. code:: python
 
     rna_seq_data.cal_ISD_cistrome()
     rna_seq_data.P_value_matrix
@@ -1042,7 +1041,7 @@ Calculating ISD
 
 
 
-.. code:: ipython3
+.. code:: python
 
     rna_seq_data.get_tf_score()
     tem_exp = rna_raw.to_df().merge(test_data.adata.obs.loc[:,'new_leiden'],left_index=True,right_index=True)
@@ -1391,7 +1390,7 @@ Calculating ISD
 
 
 
-.. code:: ipython3
+.. code:: python
 
     rna_seq_data.Ori_Data.ad_all = grouped
     rna_seq_data.Ori_Data.super_gene_exp = grouped
@@ -1744,7 +1743,7 @@ Calculating ISD
 
 
 
-.. code:: ipython3
+.. code:: python
 
     rna_seq_data.tf_score
 
@@ -2093,7 +2092,7 @@ Calculating ISD
 Calculate the AUPRC and AUROC
 =============================
 
-.. code:: ipython3
+.. code:: python
 
     scripro_score = test_data.adata.obs.merge(rna_seq_data.tf_score,left_on='new_leiden',right_index=True).iloc[:,13:]
     commontf = set(test_data.adata.obs['gene']).intersection(set(scripro_score.columns))
@@ -2207,7 +2206,7 @@ Calculate the AUPRC and AUROC
 
 
 
-.. code:: ipython3
+.. code:: python
 
     import pandas as pd
     from sklearn.metrics import precision_recall_curve, auc

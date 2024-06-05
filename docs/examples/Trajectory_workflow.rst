@@ -3,22 +3,28 @@ Trajectory & ATAC Only Workflow
 
 To test the ability of SCRIPro to apply to continuously differentiated datasets, we applied it to SHARE-seq sequenced mouse hair follicle development data (which can be downloaded from https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE140203), where transcriptome and epigenome data were used to infer transcription factor enrichment scores, respectively, and examine the spatio-temporal heterogeneity of transcription factor function.
 
+Using Shell: 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 Transcription factor enrichment scores can be obtained by SCRIPro using the following shell statement:
 
-
-.. code:: ipython3
+.. code:: shell
 
     scripro enrich_multiome -i ./data/rna/trajectory.h5ad -n 50 -s mm10 -a matrix -b 1 -f ./data/atac/trajectory.h5ad -g ./gencode.vM25.annotation.gtf.gz -p  Trajectory -t 12
 
 Transcription factor enrichment scores can be obtained by SCRIP using the following shell statement:
 
-.. code:: ipython3
+.. code:: shell
 
 
     scripro enrich_atac enrich -i ./data/atac/trajectory.h5ad -s mm -p Trajectory  -t 12
 
+========================   
 
-.. code:: ipython3
+Using Python for custom analysis:
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. code:: python
 
     import scripro
     import scglue
@@ -37,7 +43,7 @@ Load data
 Load the scRNA-seq data and scATAC-seq data, as well as the SCRIP
 calculated TF score
 
-.. code:: ipython3
+.. code:: python
 
     miradata = anndata.read_h5ad('./data/rna/trajectory.h5ad')
     scrip = pd.read_csv('./enrichment/SCRIP_enrichment.txt',sep='\t',index_col=0)
@@ -54,7 +60,7 @@ calculated TF score
 Calculate Supercell and markergene
 ----------------------------------
 
-.. code:: ipython3
+.. code:: python
 
     test_data = scripro.Ori_Data(rna,Cell_num=50)
     test_data.get_positive_marker_gene_parallel(cores=4)
@@ -186,7 +192,7 @@ Calculate Supercell and markergene
 
 
 
-.. code:: ipython3
+.. code:: python
 
     test_data.adata.obs
 
@@ -327,7 +333,7 @@ Calculate Supercell and markergene
 Calculate the landscape of supercell
 ------------------------------------
 
-.. code:: ipython3
+.. code:: python
 
     scripro.dataframe_to_sparse_tsv(atac_df, 'test.tsv')
     scripro.get_supercell_fragment(cellgroup,'.','./test.tsv',chunksize = 10000000)
@@ -337,7 +343,7 @@ Calculate the landscape of supercell
 Calculate the TF activity score
 -------------------------------
 
-.. code:: ipython3
+.. code:: python
 
     share_seq_data.cal_ISD_parallel('./bigwig/')
     share_seq_data.get_tf_score()
@@ -351,7 +357,7 @@ Calculate the TF activity score
 Calculate the TF activity score corresponding to pesudotime
 -----------------------------------------------------------
 
-.. code:: ipython3
+.. code:: python
 
     trajectory_data = sc.read_h5ad('/fs/home/xuyunfan/project/SCRIPro/package/trajectory.h5ad')
     all_pro_score = pd.merge(test_data.adata.obs,share_seq_data.tf_score,left_on='new_leiden',right_index=True)
@@ -370,7 +376,7 @@ Calculate the TF activity score corresponding to pesudotime
 Calculate the difference between the SCRIPro and SCRIP scores corresponding to ORS-Medulla
 ------------------------------------------------------------------------------------------
 
-.. code:: ipython3
+.. code:: python
 
     select_cell2 = list(set(select_cell).intersection(all_pro_score.index))
     scrip = (scrip - scrip.min())/(scrip.max()-scrip.min())
@@ -387,7 +393,7 @@ Calculate the difference between the SCRIPro and SCRIP scores corresponding to O
 .. image:: Trajectory_workflow_files/Trajectory_workflow_47_1.png
 
 
-.. code:: ipython3
+.. code:: python
 
     plt.figure(figsize=(10, 5))
     TF = 'Hoxc13'

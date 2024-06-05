@@ -46,7 +46,7 @@ To install STAGATE, use:
 .. code:: shell
 
    git clone git@github.com:QIFEIDKN/STAGATE.git
-   cd STAGATE-main
+   cd STAGATE
    python setup.py build
    python setup.py install
 

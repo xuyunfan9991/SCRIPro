@@ -7,27 +7,30 @@ the input of the corresponding scRNA-seq sequencing matrix.
 To demonstrate SCRIP's ability to be applied to different tissue types and infer target genes for TRs, we applied SCRIP to 10X lymphoma sequencing data. Data are available on https://www.10xgenomics.com/datasets/fresh-frozen-lymph-node-with-b-cell-lymphoma-14-k-sorted-nuclei-1-standard-2-0
 
 
+Using Shell: 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 The resulting tf_score matrix can be obtained by using the following shell statement:
 
-.. code:: ipython3
+.. code:: shell
 
     scripro enrich -i ./data/rna/rna.h5ad -n 50 -s hs -p rna_workflow -t 32
 
-
- ========================
-   
+  
 The resulting gata3_score matrix can be obtained through the following shell statement, where rna_workflow.pkl is the result of SCRIPro enrich:
 
 
-.. code:: ipython3
+.. code:: shell
 
     scripro get_tf_target -i rna_workflow.pkl -t GATA3 -p GATA3_target
 
 
- ========================
+########################################
 
+Using Python for custom analysis:
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. code:: ipython3
+.. code:: python
 
     import numpy as np
     import pandas as pd
@@ -46,7 +49,7 @@ The resulting gata3_score matrix can be obtained through the following shell sta
 Load and preprocess data
 ========================
 
-.. code:: ipython3
+.. code:: python
 
     rna = sc.read_h5ad('./data/rna/rna.h5ad')
     rna.var_names_make_unique()
@@ -61,15 +64,15 @@ Load and preprocess data
     sc.tl.umap(rna)
     sc.tl.leiden(rna)
 
-Calculate the Supercell and the marker genes corresponding to Supercell
+Calculate the Supercell and the marker genes corresponding to Supercell.
 
-.. code:: ipython3
+.. code:: python
 
     test_data = scripro.Ori_Data(rna,Cell_num=50)
 
-ad_all is the integrated counting matrix
+ad_all is the integrated counting matrix.
 
-.. code:: ipython3
+.. code:: python
 
     test_data.ad_all
 
@@ -391,32 +394,18 @@ ad_all is the integrated counting matrix
 
 
 
-.. code:: ipython3
+.. code:: python
 
     test_data.get_positive_marker_gene_parallel()
-
-
-.. parsed-literal::
-
-    Compute marker gene
-
-
-.. code:: ipython3
-
     rna_seq_data = scripro.SCRIPro_RNA(5,'hg38',test_data,assays=['Direct','DNase','H3K27ac'])
 
 The computational process of In Silico Deletion
 ===============================================
 
-.. code:: ipython3
-
+.. code:: python
   
     rna_seq_data.cal_ISD_cistrome()
 
-
-.. parsed-literal::
-
-    
 
 
 The P-value matrix of each Supercell LISA is obtained according to the
@@ -425,12 +414,9 @@ calculation results
 Get TF activity Score
 =====================
 
-.. code:: ipython3
+.. code:: python
 
     rna_seq_data.get_tf_score()
-
-.. code:: ipython3
-
     rna_seq_data.P_value_matrix
 
 
@@ -778,11 +764,9 @@ Get TF activity Score
 The corresponding RP score and expression value are used to weight the
 P-value obtained, and the final tf activity score is obtained
 
-.. code:: ipython3
+.. code:: python
 
     rna_seq_data.tf_score
-
-
 
 
 .. raw:: html
@@ -1127,12 +1111,9 @@ P-value obtained, and the final tf activity score is obtained
 Calculate the downstream target gene of each TF in each Supercell
 =================================================================
 
-.. code:: ipython3
+.. code:: python
 
     gata3_score = rna_seq_data.get_tf_target('GATA3')
-
-.. code:: ipython3
-
     gata3_score
 
 
