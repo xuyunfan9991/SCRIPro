@@ -50,4 +50,9 @@ To install STAGATE, use:
    python setup.py build
    python setup.py install
 
+If you encountered with this error message:
 
+.. code:: shell
+
+   sparse_placeholder is not compatible with eager execution.
+please see this link: https://github.com/QIFEIDKN/STAGATE/issues/21
