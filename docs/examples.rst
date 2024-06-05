@@ -1,14 +1,15 @@
 Examples
 ===========
 
-
+It is very easy to use the SCRIPro, which you only need to write a single command line as mentioned in “Usage” part. Here, we provide 4 examples that applied SCRIPro to diverse biological systems and used the results to analyze more interesting biological findings. We provided custom some analyzing codes here, and detailed methods and conclusions can be found in our paper and  `Github <https://github.com/xuyunfan9991/SCRIPro>`_.
 
 .. nbgallery::
-
+   
    examples/Multiome_workflow
    examples/Trajectory_workflow
    examples/Only_RNA_Workflow
    examples/scripro_metacells
+
 
 .. toctree::
    :hidden:
