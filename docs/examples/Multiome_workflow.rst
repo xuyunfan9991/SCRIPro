@@ -934,7 +934,7 @@ workflow:
 .. code:: python
 
     combined_rna.obs.loc[:,'new_leiden'] = np.nan
-    scripro.glue_supercell(combined_rna,50)
+    scripro.glue_metacell(combined_rna,50)
     rna_leiden_clusters = combined_rna.obs['new_leiden']
     rna_leiden_clusters
 
@@ -959,8 +959,8 @@ workflow:
 
 
 The RNA-Seq and ATAC-seq omics data are combined to generate a new
-dataset Combined, then divide supercell using the RNA-seq data region,
-and assign the corresponding supercell to the corresponding ATAC-seq
+dataset Combined, then divide metacell using the RNA-seq data region,
+and assign the corresponding metacell to the corresponding ATAC-seq
 data.
 
 .. code:: python
@@ -1065,7 +1065,7 @@ data.
 
 
 
-Calculate Supercell and markergene
+Calculate metacell and markergene
 ----------------------------------
 
 .. code:: python
@@ -1075,14 +1075,14 @@ Calculate Supercell and markergene
     test_data.get_positive_marker_gene_parallel()
 
 The data from ATAC-seq is used to generate the corresponding chromatin
-landscape, that is the bigwig file corresponding to supercell of the
+landscape, that is the bigwig file corresponding to metacell of the
 same name, which is stored in the folder ‘./bigwig’.
 
 .. code:: python
 
     scripro.dataframe_to_sparse_tsv(atac.to_df(), 'test.tsv')
-    scripro.get_supercell_fragment(cellgroup,'.','./test.tsv',chunksize = 10000000)
-    scripro.process_tsv('./supercell_fragment/', 'hg38')
+    scripro.get_metacell_fragment(cellgroup,'.','./test.tsv',chunksize = 10000000)
+    scripro.process_tsv('./metacell_fragment/', 'hg38')
     share_seq_data = scripro.SCRIPro_Multiome(8,'hg38',test_data)
 
 Calculate the TF activity score

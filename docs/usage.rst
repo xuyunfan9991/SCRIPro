@@ -21,8 +21,8 @@ SCRIPro is dedicated for single-cell or spatial RNA-seq datasets and multiome da
 
 
     optional arguments:
-    -h, --help            show this help message and exit
-    --version             show program's version number and exit
+    -h, --help            Show this help message and exit
+    --version             Show program's version number and exit
 
     For command line options of each command, type: scripro COMMAND -h
 
@@ -33,7 +33,7 @@ scripro enrich_rna
 
 For enrichment of TF activity for single-cell or spatial RNA-seq data, you can use ``scripro enrich_rna``.
 - In this function, you can input the feature count matrix in H5 or MTX format.   
-- The ``-n`` parameter controls how many cells merge into a supercell. This parameter affects the resolution of the results.  
+- The ``-n`` parameter controls how many cells merge into a metacell. This parameter affects the resolution of the results.  
 - This function will output a pkl including the pvalue matrix and tf activity score matrix.
 
 .. code:: 
@@ -41,13 +41,13 @@ For enrichment of TF activity for single-cell or spatial RNA-seq data, you can u
     scripro enrich_rna [-h] -i FEATURE_MATRIX -n CELL_NUM -s {hg38,mm10} -p PROJECT [-t N_CORES]
 
     optional arguments:
-    -h, --help            show this help message and exit
+    -h, --help            Show this help message and exit
 
     Input files arguments:
     -i FEATURE_MATRIX, --input_feature_matrix FEATURE_MATRIX
                             scRNA-seq data matrix . REQUIRED.
     -n CELL_NUM, --cell_number CELL_NUM
-                            Supercell Cell Number . REQUIRED.
+                            Metacell Cell Number . REQUIRED.
     -s {hg38,mm10}, --species {hg38,mm10}
                             Species. "hg38"(human) or "mm10"(mouse). REQUIRED.
 
@@ -67,10 +67,10 @@ For enrichment of TF activity for both RNA-seq and ATAC-seq for single-cell or s
 
 - In this function, you are allowed to input a transcriptome dataset and a chromatin accessibility dataset.  
 - For transcriptome data, a feature count matrix is required. For chromatin accessibility, you can input a fragment file or feature count matrix either.   
-- The ``-n`` parameter controls how many cells merge into a supercell. This parameter affects the resolution of the results.   
+- The ``-n`` parameter controls how many cells merge into a metacell. This parameter affects the resolution of the results.   
 - For barcode matched multiome dataset, like SHARE-seq or 10X multiome dataset, the ``-b`` should be set to ``0``. Otherwise, this should be set as ``1``.  
 - If ``-b`` is set as ``1``, a GTF annotation file need to provide.   
-- This function will output a pkl including the pvalue matrix and tf activity score matrix and a dir named 'bigwig' will also be generated, containing the each supercell's corresponding chromatin landscape file
+- This function will output a pkl including the pvalue matrix and tf activity score matrix and a dir named 'bigwig' will also be generated, containing the each metacell's corresponding chromatin landscape file
 
 
 .. code:: 
@@ -78,13 +78,13 @@ For enrichment of TF activity for both RNA-seq and ATAC-seq for single-cell or s
     usage: scripro enrich_multiome [-h] -i FEATURE_MATRIX -n CELL_NUM -s {hg38,mm10} -a {fragment,matrix} -b {0,1} -f ATAC_PATH [-g GLUE_ANNOTATION] -p PROJECT [-t N_CORES]
 
     optional arguments:
-    -h, --help            show this help message and exit
+    -h, --help            Show this help message and exit
 
     Input files arguments:
     -i FEATURE_MATRIX, --input_feature_matrix FEATURE_MATRIX
                             A cell by peak matrix . REQUIRED.
     -n CELL_NUM, --cell_number CELL_NUM
-                            Supercell Cell Number . REQUIRED.
+                            Metacell Cell Number . REQUIRED.
     -s {hg38,mm10}, --species {hg38,mm10}
                             Species. "hg38"(human) or "mm10"(mouse). REQUIRED.
     -a {fragment,matrix}, --atac_file_type {fragment,matrix}
@@ -135,7 +135,7 @@ Using example:
     scripro enrich_atac enrich [-h] -i FEATURE_MATRIX -s {hs,mm} [-p PROJECT] [--min_cells MIN_CELLS] [--min_peaks MIN_PEAKS] [--max_peaks MAX_PEAKS] [-t N_CORES] [-m {max,mean}] [-y] [--clean]
 
     optional arguments:
-    -h, --help            show this help message and exit
+    -h, --help            Show this help message and exit
 
     Input files arguments:
     -i FEATURE_MATRIX, --input_feature_matrix FEATURE_MATRIX
@@ -170,20 +170,20 @@ scripro get_tf_target
 For getting the target of specific TR, you can use ``scripro get_tf_target``.
 
 - In this function, you can input the results of ``enrich_rna`` or ``enrich_multiome`` and a TF name and will output the target genes of the TF.  
-- This function will output a csv containing the regulatory activity of tf downstream target genes within each supercell is generated.
+- This function will output a csv containing the regulatory activity of tf downstream target genes within each metacell is generated.
 
 .. code:: 
 
     scripro get_tf_target [-h] -i SCRIPRO_RESULT -t TF_NAME -p PROJECT
 
     optional arguments:
-    -h, --help            show this help message and exit
+    -h, --help            Show this help message and exit
 
     Input files arguments:
     -i SCRIPRO_RESULT, --input_scripro_result SCRIPRO_RESULT
-                            scripro result pickle file. REQUIRED.
+                            SCRIPro result pickle file. REQUIRED.
     -t TF_NAME, --tf_name TF_NAME
-                            Tf name to calculate the target . REQUIRED.
+                            TF name to calculate the target . REQUIRED.
 
     Output arguments:
     -p PROJECT, --project PROJECT

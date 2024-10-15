@@ -72,7 +72,7 @@ def get_leiden_based_on_ncell(ad_sub, num_cells, verbose):
     if verbose:
         print('There are ',
               len(np.unique(ad_sub.obs.leiden.to_numpy().ravel())),
-              ' supercells')
+              ' metacells')
 
     return ad_sub
 def get_merged_dataset(adata_all, obs):
@@ -100,7 +100,7 @@ def get_merged_dataset(adata_all, obs):
     all_merged.X = np.round(all_merged.X)
 
     return all_merged
-def supercell_pipeline(adata, ngenes=2000, npcs=40,cell_num=50,min_cell=30,verbose=True):
+def metacell_pipeline(adata, ngenes=2000, npcs=40,cell_num=50,min_cell=30,verbose=True):
     ncell=adata.shape[0]/cell_num
     saved_counts = adata.X.copy()
     # Run PCA and find nearest neighbors

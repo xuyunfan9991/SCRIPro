@@ -1,7 +1,7 @@
 import argparse
 import pickle
 import subprocess
-from .supercell import *
+from .metacell import *
 from .utils import *
 from .Ori_data import *
 import sys
@@ -44,7 +44,7 @@ def run_enrich_only_rna(args):
     sc.pp.neighbors(feature_matrix, n_neighbors=10, n_pcs=40)
     sc.tl.umap(feature_matrix)
     sc.tl.leiden(feature_matrix,resolution=0.6)
-    print("Calculating supercell...")
+    print("Calculating metacell...")
     test_data = Ori_Data(feature_matrix,Cell_num=num)
     print("Calculating markergene...")
     test_data.get_positive_marker_gene_parallel()
@@ -110,7 +110,7 @@ def run_enrich_multiome(args):
     sc.tl.umap(feature_matrix)
     sc.tl.leiden(feature_matrix,resolution=0.6)
     
-    print("Calculating supercell...")
+    print("Calculating metacell...")
     test_data = Ori_Data(feature_matrix,Cell_num=num)
     
     if barcodes == '0':
@@ -118,12 +118,12 @@ def run_enrich_multiome(args):
         cellgroup = test_data.adata.obs.loc[:,['new_leiden']]
         test_data.get_positive_marker_gene_parallel()
         if atac_file_type=='fragment':
-            get_supercell_fragment(cellgroup,'.',atac_path,chunksize = 10000000)
-            process_tsv('./supercell_fragment/', species)
+            get_metacell_fragment(cellgroup,'.',atac_path,chunksize = 10000000)
+            process_tsv('./metacell_fragment/', species)
         else: 
             dataframe_to_sparse_tsv(atac.to_df(), 'test.tsv')
-            get_supercell_fragment(cellgroup,'.','test.tsv',chunksize = 10000000)
-            process_tsv('./supercell_fragment/', species)
+            get_metacell_fragment(cellgroup,'.','test.tsv',chunksize = 10000000)
+            process_tsv('./metacell_fragment/', species)
     else:
         print("USE GLue to calculate barcode")
         scglue.data.lsi(atac_matrix, n_components=5, n_iter=15)
@@ -155,7 +155,7 @@ def run_enrich_multiome(args):
         sc.tl.leiden(combined,resolution=0.8)
         combined_rna = combined[combined.obs.feature == 'rna']
         combined_rna.obs.loc[:,'new_leiden'] = np.nan
-        glue_supercell(combined_rna,50)
+        glue_metacell(combined_rna,50)
         rna_leiden_clusters = combined_rna.obs['new_leiden']
         combined_atac = combined[combined.obs.feature == 'atac']
         distance_matrix = cdist(combined_atac.obsm['X_umap'], combined_rna.obsm['X_umap'], metric='euclidean')
@@ -167,12 +167,12 @@ def run_enrich_multiome(args):
         if atac_file_type=='fragment':
             test_data.get_glue_cluster(rna_leiden_clusters)
             test_data.get_positive_marker_gene_parallel()
-            get_supercell_fragment(cellgroup,'.',atac_path,chunksize = 10000000)
-            process_tsv('./supercell_fragment/', 'hg38')
+            get_metacell_fragment(cellgroup,'.',atac_path,chunksize = 10000000)
+            process_tsv('./metacell_fragment/', 'hg38')
         else:
             dataframe_to_sparse_tsv(atac.to_df(), 'test.tsv')
-            get_supercell_fragment(cellgroup,'.','./test.tsv',chunksize = 10000000)
-            process_tsv('./supercell_fragment/', 'hg38')
+            get_metacell_fragment(cellgroup,'.','./test.tsv',chunksize = 10000000)
+            process_tsv('./metacell_fragment/', 'hg38')
     print("Calculating ISD")
     share_seq_data = SCRIPro_Multiome(8,'hg38',test_data)
     share_seq_data.cal_ISD_parallel('./bigwig/')
@@ -264,7 +264,7 @@ def add_enrich_parser( subparsers ):
     group_input.add_argument( "-i", "--input_feature_matrix", dest = "feature_matrix", type = str, required = True,
                               help = 'scRNA-seq data matrix . REQUIRED.' )
     group_input.add_argument( "-n", "--cell_number", dest = "cell_num", type = int, required = True,
-                              help = 'Supercell Cell Number . REQUIRED.' )
+                              help = 'metacell Cell Number . REQUIRED.' )
     group_input.add_argument( "-s", "--species", dest = "species", choices= ['hg38', 'mm10'], required = True,
                               help = 'Species. "hg38"(human) or "mm10"(mouse). REQUIRED.' )
     # group for output files
@@ -296,7 +296,7 @@ def add_enrich_parser_multiome( subparsers ):
     group_input.add_argument( "-i", "--input_feature_matrix", dest = "feature_matrix", type = str, required = True,
                               help = 'A cell by peak matrix . REQUIRED.' )
     group_input.add_argument( "-n", "--cell_number", dest = "cell_num", type = int, required = True,
-                              help = 'Supercell Cell Number . REQUIRED.' )
+                              help = 'metacell Cell Number . REQUIRED.' )
     group_input.add_argument( "-s", "--species", dest = "species", choices= ['hg38', 'mm10'], required = True,
                               help = 'Species. "hg38"(human) or "mm10"(mouse). REQUIRED.' )
     group_input.add_argument( "-a", "--atac_file_type", dest = "atac_file_type", choices= ['fragment', 'matrix'], required = True,

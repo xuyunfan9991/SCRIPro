@@ -18,7 +18,7 @@ import scanpy as sc
 import seaborn as sns
 import shutil
 import subprocess
-from .supercell import *
+from .metacell import *
 import warnings
 from collections import Counter
 from lisa import FromCoverage, FromGenes, FromRegions
@@ -29,7 +29,7 @@ from tqdm import tqdm
 
 
 def process_sub_cluster(i,cell_num,mincell):
-    merged_data, obs = supercell_pipeline(i[1], cell_num=cell_num, verbose=False,min_cell=mincell)
+    merged_data, obs = metacell_pipeline(i[1], cell_num=cell_num, verbose=False,min_cell=mincell)
     merged_data_index = [i[0] + "_" + str(j) for j in range(0, merged_data.shape[0])]
     merged_data.obs = pd.DataFrame(index=merged_data_index)
     return merged_data,i[0],obs
@@ -70,8 +70,8 @@ def cal_tf(input_data, species1, assays1):
 def process_group(group,adata,log,pval):
     return group, list(sc.get.rank_genes_groups_df(adata, group=group, log2fc_min=log, pval_cutoff=pval).sort_values(by='logfoldchanges', ascending=False)[0:500].names)
 
-def get_supercell_fragment(leiden_clusters,base_dir,fragment_file,chunksize = 10000000):
-    folder_name = base_dir+"/supercell_fragment"
+def get_metacell_fragment(leiden_clusters,base_dir,fragment_file,chunksize = 10000000):
+    folder_name = base_dir+"/metacell_fragment"
     if not os.path.exists(folder_name):
         os.mkdir(folder_name)
     else:
@@ -80,7 +80,7 @@ def get_supercell_fragment(leiden_clusters,base_dir,fragment_file,chunksize = 10
         chunk.set_index('cell', inplace=True)
         groups = chunk.groupby(leiden_clusters['new_leiden'])
         for group_name, group_data in groups:
-            file_path = os.path.join(base_dir, 'supercell_fragment', f'{group_name}.tsv')
+            file_path = os.path.join(base_dir, 'metacell_fragment', f'{group_name}.tsv')
             group_data = group_data[group_data['chrom'].str.startswith('chr')]
             group_data.to_csv(file_path, sep='\t',mode='a', header=False, index=False)
     print('final')
@@ -183,7 +183,7 @@ def process_marker(i,lisa_info,bw_path,rpmap_enhanced,factor_binging,factor_meta
     return i, factor_metadata_pd
 
 
-def glue_supercell(combined,cell_num):
+def glue_metacell(combined,cell_num):
     for i in set(combined.obs.leiden):
         leiden_index = combined.obs.loc[combined.obs.leiden == i].index
         sub_test = combined[combined.obs.leiden == i]

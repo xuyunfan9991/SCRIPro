@@ -17,7 +17,7 @@ import scanpy as sc
 import seaborn as sns
 from lisa import FromGenes
 from tqdm.contrib.concurrent import process_map
-from .supercell import *
+from .metacell import *
 from .utils import *
 from concurrent.futures import ProcessPoolExecutor, as_completed
 from functools import partial
@@ -34,7 +34,7 @@ class Ori_Data():
         self.core = cores
         if use_glue == False:
             #self._fliter()
-            self._supercell(cluster_method=self.cluster_method)
+            self._metacell(cluster_method=self.cluster_method)
             self.super_gene_exp = self.ad_all.copy()
             self.super_gene_mean = self.super_gene_exp.mean()
             self.super_gene_std = self.super_gene_exp.std()
@@ -105,7 +105,7 @@ class Ori_Data():
         self.marker_list = marker_gene_list
                 
         
-    def _supercell(self,cluster_method='leiden'):
+    def _metacell(self,cluster_method='leiden'):
         adList = []
         adList_obs = {}
         subcluster_adata = {}
@@ -129,7 +129,7 @@ class Ori_Data():
                 self.adata.obs.loc[k,'new_leiden'] = i+"_"+adList_obs[i].loc[k,'leiden']  
         
         
-    def get_supercell_exp(self,pvalue_matrix):
+    def get_metacell_exp(self,pvalue_matrix):
         super_exp_tra = self.ad_all.loc[pvalue_matrix.index,pvalue_matrix.columns]
         super_exp_tra = self._replace_all_outliers(super_exp_tra)
         super_exp_tra = super_exp_tra - np.min(super_exp_tra)/np.max(super_exp_tra) - np.min(super_exp_tra)
@@ -213,9 +213,9 @@ class SCRIPro_Multiome():
         self.chip_matrix_melt = chip_matrix2_melt
         def cal_tf_score(row):
             tf_name = row['column']
-            supercell_name = row['row']
+            metacell_name = row['row']
             query_gene = row['value']
-            return ((super_gene_exp.loc[supercell_name, query_gene] - super_gene_mean[query_gene])/super_gene_std[query_gene]).mean() + (super_gene_exp.loc[supercell_name, tf_name] - super_gene_mean[tf_name])/ super_gene_std[tf_name]
+            return ((super_gene_exp.loc[metacell_name, query_gene] - super_gene_mean[query_gene])/super_gene_std[query_gene]).mean() + (super_gene_exp.loc[metacell_name, tf_name] - super_gene_mean[tf_name])/ super_gene_std[tf_name]
         
         
         chip_matrix2_melt['value2'] = chip_matrix2_melt.apply(cal_tf_score, axis=1)
@@ -256,9 +256,9 @@ class SCRIPro_Multiome():
         self.chip_matrix_melt = chip_matrix2_melt
         def cal_tf_score(row):
             tf_name = row['column']
-            supercell_name = row['row']
+            metacell_name = row['row']
             query_gene = row['value']
-            return ((super_gene_exp.loc[supercell_name, query_gene] - super_gene_mean[query_gene])/super_gene_std[query_gene]).mean()
+            return ((super_gene_exp.loc[metacell_name, query_gene] - super_gene_mean[query_gene])/super_gene_std[query_gene]).mean()
         
         
         chip_matrix2_melt['value2'] = chip_matrix2_melt.apply(cal_tf_score, axis=1)

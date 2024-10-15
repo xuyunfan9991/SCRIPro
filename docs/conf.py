@@ -68,7 +68,7 @@ nbsphinx_thumbnails = {
     "examples/Multiome_workflow": "_static/img/Multiome.png",
     "examples/Trajectory_workflow": "_static/img/Trajectory.png",
     "examples/Only_RNA_Workflow": "_static/img/OnlyRNA.jpg",
-    "examples/scripro_metacells": "_static/img/supercell.jpg",
+    "examples/scripro_metacells": "_static/img/metacell.jpg",
 }
 
 html_theme_options = {
