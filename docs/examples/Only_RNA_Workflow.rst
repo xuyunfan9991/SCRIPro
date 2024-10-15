@@ -64,7 +64,7 @@ Load and preprocess data
     sc.tl.umap(rna)
     sc.tl.leiden(rna)
 
-Calculate the Supercell and the marker genes corresponding to Supercell.
+Calculate the metacell and the marker genes corresponding to metacell.
 
 .. code:: python
 
@@ -408,7 +408,7 @@ The computational process of In Silico Deletion
 
 
 
-The P-value matrix of each Supercell LISA is obtained according to the
+The P-value matrix of each metacell LISA is obtained according to the
 calculation results
 
 Get TF activity Score
@@ -1108,7 +1108,7 @@ P-value obtained, and the final tf activity score is obtained
 
 
 
-Calculate the downstream target gene of each TF in each Supercell
+Calculate the downstream target gene of each TF in each metacell
 =================================================================
 
 .. code:: python

@@ -57,7 +57,7 @@ calculated TF score
     rna.var_names_make_unique()
     rna.var_names = [x.capitalize() for x in rna.var_names]
 
-Calculate Supercell and markergene
+Calculate metacell and markergene
 ----------------------------------
 
 .. code:: python
@@ -330,14 +330,14 @@ Calculate Supercell and markergene
 
 
 
-Calculate the landscape of supercell
+Calculate the landscape of metacell
 ------------------------------------
 
 .. code:: python
 
     scripro.dataframe_to_sparse_tsv(atac_df, 'test.tsv')
-    scripro.get_supercell_fragment(cellgroup,'.','./test.tsv',chunksize = 10000000)
-    scripro.process_tsv('./supercell_fragment/', 'mm10')
+    scripro.get_metacell_fragment(cellgroup,'.','./test.tsv',chunksize = 10000000)
+    scripro.process_tsv('./metacell_fragment/', 'mm10')
     share_seq_data = scripro.SCRIPro_Multiome(8,'mm10',test_data)
 
 Calculate the TF activity score

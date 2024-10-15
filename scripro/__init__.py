@@ -1,4 +1,4 @@
 from .Ori_data import *
-from .supercell import *
+from .metacell import *
 from .utils import *
 

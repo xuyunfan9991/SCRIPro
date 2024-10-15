@@ -1,9 +1,9 @@
-Metacell & Supercell Comparison
+Persad et al  & Littman et al  Comparison
 ----------------------------------
 
 To test SCRIPro's ability to explore the intensity of transcription factor regulation, we applied it to a CRISPRa activated T cell single-cell sequencing data set to calculate AUROC and AUPRC using the activated Label per cell as the gold standard,and this data can be downloaded from http://www.perturbase.cn/download (PRJNA787633).
 
-In this notebook, we use the cell clustering results obtained by metacell to replace the Supercell clustering results and test Metacell's ability to extract heterogeneous cells.
+In this notebook, we use the cell clustering results obtained by Persad et al to replace the Littman et al clustering results and test Persad et al ability to extract heterogeneous cells.
 
 
 Using Shell: 
@@ -281,16 +281,16 @@ contain raw data, we download raw data for re-processing
 
 
 
-replace supercell data with metacell data
+replace Littman et al data with Persad et al data
 =========================================
 
-Load the metacell data calculated by metacell, then replace supercell
-data with metacell data (new_leiden column)
+Load the Persad et al data calculated by Persad et al, then replace Littman et al
+data with Persad et al data (new_leiden column)
 
 .. code:: python
 
-    metacell = pd.read_csv('./metacells.csv')
-    metacell
+    rawmeta = pd.read_csv('./rawmeta.csv')
+    rawmeta
 
 
 
@@ -468,7 +468,7 @@ data with metacell data (new_leiden column)
 
 .. code:: python
 
-    test_data.adata.obs.new_leiden=list(metacell.metacell)
+    test_data.adata.obs.new_leiden=list(rawmeta.metacell)
     test_data.adata.obs
 
 
